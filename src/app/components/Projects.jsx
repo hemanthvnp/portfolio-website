@@ -1,28 +1,7 @@
 import { motion } from "motion/react";
 import { Github, ExternalLink } from "lucide-react";
 
-interface Project {
-  title;
-  description;
-  techStack: string[];
-  highlights: string[];
-  github?;
-  link?;
-}
-
-const projects: Project[] = [
-  {
-    title: "LeaveFlow: Smart Leave Management System",
-    description:
-      "Developed a centralized leave management system enabling employees to submit leave requests online with admin approval workflows.",
-    techStack: ["JavaScript", "Node.js", "Database", "Web Application"],
-    highlights: [
-      "Engineered a role-based workflow enabling employees to apply for leave and admins to approve/reject requests",
-      "Designed a dashboard for leave tracking, status updates, and record management",
-      "Built the system to improve organizational efficiency and reduce manual processing overhead",
-    ],
-    github: "https://github.com/hemanthvnp/LeaveFlow",
-  },
+const projects = [
   {
     title: "MargaMetis: Route Optimization System",
     description:
@@ -150,12 +129,6 @@ export function Projects() {
             <div>
               <h3 className="text-lg font-semibold mb-2">FinVerse</h3>
               <p className="text-gray-400">Part of PSGCT's FinVerse's Analyst team</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Linux and OSS</h3>
-              <p className="text-gray-400">
-                Love to explore linux distros and contribute to OSS
-              </p>
             </div>
           </div>
         </motion.div>

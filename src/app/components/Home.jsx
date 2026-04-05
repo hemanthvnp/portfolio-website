@@ -13,13 +13,15 @@ export function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-6xl md:text-8xl font-bold mb-6">
-              Backend
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-purple-600">
-                Developer
-              </span>
+            <p className="text-xl md:text-2xl font-medium mb-2 text-gray-400">
+              Hi, I am
+            </p>
+            <h1 className="text-6xl md:text-7xl font-bold mb-4 tracking-tight text-white">
+              Hemanth Vasudev N P
             </h1>
+            <h2 className="text-3xl md:text-5xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-[#00C9FF] to-[#92FE9D]">
+              BACKEND ENGINEER
+            </h2>
             <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto">
               Building robust, scalable systems and APIs. Passionate about distributed systems,
               databases, and cloud infrastructure.
@@ -85,7 +87,7 @@ export function Home() {
                 MySQL, PostgreSQL, MongoDB
               </p>
               <p className="text-gray-400">
-                Git, Postman, Linux, Windows
+                Git, Postman, Windows
               </p>
             </motion.div>
 
@@ -127,17 +129,17 @@ export function Home() {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="p-8 bg-gradient-to-br from-red-500/10 to-purple-500/10 border border-white/10 rounded-2xl"
+              className="p-8 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-white/10 rounded-2xl"
             >
-              <h3 className="text-2xl font-bold mb-3">LeaveFlow</h3>
+              <h3 className="text-2xl font-bold mb-3">CineScope</h3>
               <p className="text-gray-400 mb-4">
-                Smart Leave Management System with role-based workflows enabling employees to
-                submit leave requests and admins to approve/reject efficiently.
+                Movie discovery and analysis platform for searching, analyzing, and discovering
+                films using external APIs.
               </p>
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 bg-white/10 rounded-full text-xs">JavaScript</span>
-                <span className="px-3 py-1 bg-white/10 rounded-full text-xs">Node.js</span>
-                <span className="px-3 py-1 bg-white/10 rounded-full text-xs">Database</span>
+                <span className="px-3 py-1 bg-white/10 rounded-full text-xs">API Integration</span>
+                <span className="px-3 py-1 bg-white/10 rounded-full text-xs">Web Development</span>
               </div>
             </motion.div>
 

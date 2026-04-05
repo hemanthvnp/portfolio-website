@@ -64,7 +64,7 @@ export function Layout() {
 
       <footer className="bg-[#0a0a0a] border-t border-white/10 py-8 mt-20">
         <div className="max-w-7xl mx-auto px-6 text-center text-gray-400 text-sm">
-          <p>© 2026 Hemanth Vasudev N P. Built with React & Tailwind CSS.</p>
+          <p>© 2026 Hemanth Vasudev N P. Built with ☕</p>
         </div>
       </footer>
     </div>
