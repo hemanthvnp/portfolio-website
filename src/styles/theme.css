@@ -1,6 +1,12 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* Theme-aware contrast channels (R G B) consumed by the `ink`/`paper`
+     Tailwind tokens below. These flip in `.dark` so that utilities like
+     text-ink/55, bg-ink/[0.03], border-ink/10 resolve correctly per theme. */
+  --c: 15 23 42;        /* foreground / contrast — slate-900 in light */
+  --bg: 255 255 255;    /* page background — white in light */
+
   --font-size: 16px;
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
@@ -42,6 +48,9 @@
 }
 
 .dark {
+  --c: 255 255 255;     /* foreground / contrast — pure white in dark */
+  --bg: 0 0 0;          /* page background — pure black in dark */
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
@@ -79,6 +88,12 @@
 }
 
 @theme inline {
+  /* Theme-aware contrast tokens. `inline` inlines the rgb(var(--c)) value
+     into utilities so the .dark override of --c cascades at runtime, and
+     Tailwind's opacity modifiers (ink/55) work via color-mix. */
+  --color-ink: rgb(var(--c));
+  --color-paper: rgb(var(--bg));
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -117,6 +132,15 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* Always-dark surfaces (terminal/benchmark widgets) keep a dark contrast
+   context regardless of the active theme, so `ink`/`paper` utilities inside
+   them resolve to light-on-dark in both light and dark mode. */
+.surface-dark {
+  --c: 255 255 255;
+  --bg: 10 10 10;
+  color-scheme: dark;
 }
 
 @layer base {

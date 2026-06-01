@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" rx="48" fill="#050816"/>
+  <circle cx="1044" cy="110" r="170" fill="#1b3a57" fill-opacity="0.38"/>
+  <circle cx="186" cy="556" r="210" fill="#7c3aed" fill-opacity="0.18"/>
+  <rect x="84" y="84" width="1032" height="462" rx="32" stroke="rgba(255,255,255,0.12)"/>
+  <text x="100" y="210" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="700">Hemanth Vasudev N P</text>
+  <text x="100" y="278" fill="#9fb4c7" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500">Backend engineer building scalable systems, APIs, and thoughtful products.</text>
+  <text x="100" y="368" fill="#7dd3fc" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="600">Portfolio • Projects • Resume • Contact</text>
+  <rect x="100" y="418" width="220" height="56" rx="28" fill="#ffffff"/>
+  <text x="137" y="454" fill="#050816" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">hemanthvnp.dev</text>
+</svg>

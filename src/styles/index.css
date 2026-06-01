@@ -2,7 +2,68 @@
 @import './tailwind.css';
 @import './theme.css';
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  background-color: rgb(var(--bg));
+  background-image:
+    linear-gradient(rgb(var(--c) / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--c) / 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transition: background-color 200ms ease;
+}
+
+/* JetBrains Mono for all monospace contexts */
+.font-mono, code, pre, kbd, samp {
+  font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+}
+
+::selection {
+  background: rgba(125, 211, 252, 0.30);
+  color: rgb(var(--c));
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(125, 211, 252, 0.9);
+  outline-offset: 3px;
+}
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Slim custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--c) / 0.12);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.30);
 }

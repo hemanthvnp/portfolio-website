@@ -1,60 +1,117 @@
 import { motion } from "motion/react";
-import { Download, Github, Linkedin, Mail, Phone } from "lucide-react";
+import { Download, Github, Linkedin, Mail, Phone, GraduationCap, MapPin } from "lucide-react";
 
 const resumePdf = "/resume.pdf";
+
+const skillGroups = [
+  {
+    label: "Languages",
+    pills: "border-cyan-400/25 bg-cyan-400/8 text-cyan-300",
+    skills: ["Python", "C++", "C", "JavaScript"],
+  },
+  {
+    label: "Frameworks",
+    pills: "border-violet-400/25 bg-violet-400/8 text-violet-300",
+    skills: ["FastAPI", "Flask", "ReactJS", "Node.js", "scikit-learn", "NumPy", "SciPy", "sentence-transformers"],
+  },
+  {
+    label: "Databases",
+    pills: "border-sky-400/25 bg-sky-400/8 text-sky-300",
+    skills: ["MySQL", "PostgreSQL", "MongoDB"],
+  },
+  {
+    label: "Tools",
+    pills: "border-amber-400/25 bg-amber-400/8 text-amber-300",
+    skills: ["Git", "Redis", "Prometheus", "Postman"],
+  },
+  {
+    label: "DevOps & Cloud",
+    pills: "border-emerald-400/25 bg-emerald-400/8 text-emerald-300",
+    skills: ["Docker", "Kubernetes", "Linux", "GCP", "Azure"],
+  },
+];
+
+const education = [
+  {
+    level: "Undergraduate",
+    institution: "PSG College of Technology",
+    degree: "M.Sc (Integrated) Software Systems",
+    period: "2024 — Present",
+    score: "CGPA: 8.43 / 10",
+    scoreColor: "text-emerald-300",
+    dot: "bg-cyan-400",
+    border: "border-cyan-400/25",
+  },
+  {
+    level: "High School",
+    institution: "The TVS School, Madurai",
+    degree: "Higher Secondary",
+    period: "March 2024",
+    score: "90.3%",
+    scoreColor: "text-violet-300",
+    dot: "bg-violet-400",
+    border: "border-violet-400/25",
+  },
+];
 
 export function Resume() {
   return (
     <div className="min-h-screen py-20 px-6">
-      <div className="max-w-5xl mx-auto">
+      <div className="mx-auto max-w-5xl">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12"
         >
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Resume</h1>
-          <div className="flex flex-wrap gap-4 items-center">
+          <p className="text-sm uppercase tracking-[0.35em] text-ink/38">Curriculum vitae</p>
+          <h1 className="mt-4 text-5xl font-bold md:text-6xl">Resume</h1>
+          <p className="mt-5 max-w-2xl text-xl text-ink/57">
+            A concise overview of experience, tools, and focus areas. Download the PDF below
+            for a version aligned with the full portfolio.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-2.5">
             <a
               href="https://github.com/hemanthvnp"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/10 rounded-full hover:bg-white/20 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-ink/5 px-4 py-2 text-sm text-ink/65 transition-colors hover:bg-ink/10 hover:text-ink"
             >
-              <Github className="w-4 h-4" />
-              <span>GitHub</span>
+              <Github className="h-4 w-4" /> GitHub
             </a>
             <a
               href="https://www.linkedin.com/in/hemanthvasudevnp/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/10 rounded-full hover:bg-white/20 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-ink/5 px-4 py-2 text-sm text-ink/65 transition-colors hover:bg-ink/10 hover:text-ink"
             >
-              <Linkedin className="w-4 h-4" />
-              <span>LinkedIn</span>
+              <Linkedin className="h-4 w-4" /> LinkedIn
             </a>
             <a
               href="mailto:hemantth06@outlook.com"
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/10 rounded-full hover:bg-white/20 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-ink/5 px-4 py-2 text-sm text-ink/65 transition-colors hover:bg-ink/10 hover:text-ink"
             >
-              <Mail className="w-4 h-4" />
-              <span>Email</span>
+              <Mail className="h-4 w-4" /> hemantth06@outlook.com
             </a>
             <a
               href="tel:+918248272473"
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/10 rounded-full hover:bg-white/20 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-ink/5 px-4 py-2 text-sm text-ink/65 transition-colors hover:bg-ink/10 hover:text-ink"
             >
-              <Phone className="w-4 h-4" />
-              <span>+91 82482 72473</span>
+              <Phone className="h-4 w-4" /> +91 82482 72473
             </a>
+            <div className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-ink/5 px-4 py-2 text-sm text-ink/50">
+              <MapPin className="h-4 w-4" /> India
+            </div>
           </div>
         </motion.div>
 
-        {/* Resume PDF Viewer */}
+        {/* PDF viewer */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden mb-8"
+          transition={{ delay: 0.15 }}
+          className="mb-6 overflow-hidden rounded-3xl border border-ink/10 bg-ink/3"
         >
           <object
             data={resumePdf}
@@ -66,11 +123,11 @@ export function Resume() {
               src={resumePdf}
               width="100%"
               style={{ height: "80vh", minHeight: "600px", border: "none" }}
-              title="Resume - Hemanth Vasudev N P"
+              title="Resume — Hemanth Vasudev N P"
             >
-              <p className="p-8 text-center text-gray-400">
+              <p className="p-8 text-center text-ink/50">
                 Your browser does not support PDF viewing.{" "}
-                <a href={resumePdf} className="text-white underline">
+                <a href={resumePdf} className="text-ink underline">
                   Download the resume
                 </a>
               </p>
@@ -78,106 +135,92 @@ export function Resume() {
           </object>
         </motion.div>
 
-        {/* Download Button */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-center"
+          transition={{ delay: 0.3 }}
+          className="mb-16 text-center"
         >
           <a
             href={resumePdf}
             download="Hemanth_Vasudev_Resume.pdf"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition-colors"
+            className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-3.5 font-semibold text-paper transition-transform hover:-translate-y-0.5 hover:bg-ink/90"
           >
-            <Download className="w-5 h-5" />
+            <Download className="h-5 w-5" />
             Download Resume
           </a>
         </motion.div>
 
-        {/* Detailed Skills Section */}
+        {/* Skills */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-16 space-y-8"
+          transition={{ delay: 0.35 }}
+          className="mb-16"
         >
-          <h2 className="text-3xl font-bold">Skills & Technologies</h2>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
-              <h3 className="text-xl font-semibold mb-4">Languages</h3>
-              <p className="text-gray-300">
-                Python, C++, C, JavaScript, HTML, CSS
-              </p>
-            </div>
-
-            <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
-              <h3 className="text-xl font-semibold mb-4">Platforms</h3>
-              <p className="text-gray-300">Linux, Windows</p>
-            </div>
-
-            <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
-              <h3 className="text-xl font-semibold mb-4">Tools</h3>
-              <p className="text-gray-300">Git, Postman</p>
-            </div>
-
-            <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
-              <h3 className="text-xl font-semibold mb-4">Databases</h3>
-              <p className="text-gray-300">MySQL, PostgreSQL, MongoDB</p>
-            </div>
-
-            <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
-              <h3 className="text-xl font-semibold mb-4">Frameworks</h3>
-              <p className="text-gray-300">Flask, Node.js, React.js, FastAPI</p>
-            </div>
-
-            <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
-              <h3 className="text-xl font-semibold mb-4">DevOps & Cloud</h3>
-              <p className="text-gray-300">
-                Docker, Google Cloud Platform, Microsoft Azure
-              </p>
-            </div>
+          <h2 className="mb-8 text-3xl font-bold">Skills &amp; technologies</h2>
+          <div className="space-y-5">
+            {skillGroups.map((group, i) => (
+              <motion.div
+                key={group.label}
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + i * 0.06 }}
+                className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-5"
+              >
+                <span className="w-32 shrink-0 text-xs font-semibold uppercase tracking-[0.2em] text-ink/38">
+                  {group.label}
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {group.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className={`rounded-full border px-3.5 py-1 font-mono text-sm ${group.pills}`}
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
 
-        {/* Education Section */}
+        {/* Education */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-16 space-y-8"
+          transition={{ delay: 0.55 }}
         >
-          <h2 className="text-3xl font-bold">Education</h2>
-          
-          <div className="space-y-6">
-            <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="text-xl font-semibold">College</h3>
-                  <p className="text-gray-400">
-                    PSG College of Technology M.Sc (Integrated) Software Systems
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold">Present</p>
-                  <p className="text-gray-400">CGPA: 8.59 / 10</p>
-                </div>
-              </div>
-            </div>
+          <h2 className="mb-8 text-3xl font-bold">Education</h2>
+          <div className="relative space-y-0 pl-6">
+            {/* Timeline line */}
+            <div className="absolute left-[7px] top-3 bottom-3 w-px bg-ink/10" />
 
-            <div className="p-6 bg-white/5 border border-white/10 rounded-xl">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="text-xl font-semibold">High School</h3>
-                  <p className="text-gray-400">The TVS School, Madurai</p>
+            {education.map((edu, i) => (
+              <motion.div
+                key={edu.level}
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 + i * 0.1 }}
+                className="relative pb-8 last:pb-0"
+              >
+                <div className={`absolute -left-6 top-[6px] h-3.5 w-3.5 rounded-full border-2 border-paper ${edu.dot}`} />
+                <div className={`rounded-2xl border ${edu.border} bg-ink/4 p-5 ml-2`}>
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/38">{edu.level}</p>
+                      <h3 className="mt-1 text-lg font-bold">{edu.institution}</h3>
+                      <p className="text-sm text-ink/55">{edu.degree}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-sm font-medium text-ink/70">{edu.period}</p>
+                      <p className={`text-sm font-semibold ${edu.scoreColor}`}>{edu.score}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold">March 2024</p>
-                  <p className="text-gray-400">Percentage: 90.3</p>
-                </div>
-              </div>
-            </div>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
       </div>

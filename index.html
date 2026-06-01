@@ -3,11 +3,45 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hemanth Vasudev | Portfolio</title>
+    <title>Hemanth Vasudev | Backend Engineer</title>
+    <meta name="description" content="Hemanth Vasudev — Backend engineer building reliable systems, sharp APIs, and production-ready code. PSG College of Technology. Open to internships and collaborations." />
+    <meta name="theme-color" content="#050816" />
+    <meta name="robots" content="index,follow" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:title" content="Hemanth Vasudev | Backend Engineer" />
+    <meta property="og:description" content="Building robust, scalable systems and APIs. Explore projects and contact me for collaborations." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Hemanth Vasudev | Backend Engineer" />
+    <meta name="twitter:description" content="Building robust, scalable systems and APIs. Explore projects and contact me for collaborations." />
+    <meta name="twitter:image" content="/og-image.svg" />
+
+    <!-- Performance / Fonts / Manifest -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="msapplication-TileColor" content="#0f172a" />
   </head>
 
   <body>
+    <!-- Set the theme class before paint to avoid a flash of the wrong theme. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          var isLight = t === "light";
+          document.documentElement.classList.toggle("dark", !isLight);
+          document.documentElement.classList.toggle("light", isLight);
+          document.documentElement.style.colorScheme = isLight ? "light" : "dark";
+        } catch (e) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
-</html>
+</html>
