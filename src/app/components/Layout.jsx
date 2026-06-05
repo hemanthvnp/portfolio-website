@@ -3,6 +3,7 @@ import { Github, Linkedin, Menu, X, ArrowUp } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "./ThemeToggle.jsx";
+import { AITwin } from "./AITwin.jsx";
 
 function ScrollProgress() {
   const [progress, setProgress] = useState(0);
@@ -46,7 +47,7 @@ function ScrollToTop() {
           transition={{ duration: 0.18 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Scroll to top"
-          className="fixed bottom-6 right-6 z-50 grid h-11 w-11 place-items-center rounded-full border border-ink/12 bg-paper/80 text-ink/70 shadow-lg backdrop-blur-md transition-colors hover:border-ink/25 hover:text-ink"
+          className="fixed bottom-6 left-6 z-50 grid h-11 w-11 place-items-center rounded-full border border-ink/12 bg-paper/80 text-ink/70 shadow-lg backdrop-blur-md transition-colors hover:border-ink/25 hover:text-ink"
         >
           <ArrowUp className="h-5 w-5" />
         </motion.button>
@@ -81,6 +82,7 @@ export function Layout() {
     <div className="min-h-screen bg-paper text-ink">
       <ScrollProgress />
       <ScrollToTop />
+      <AITwin />
 
       <a
         href="#main-content"
