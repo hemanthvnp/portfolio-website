@@ -11,6 +11,8 @@ import {
   MapPin,
   GraduationCap,
 } from "lucide-react";
+import { RandomWalk } from "./widgets/RandomWalk.jsx";
+import { MiniGraph } from "./widgets/MiniGraph.jsx";
 
 /* ───────────────────────── Data ───────────────────────── */
 
@@ -203,6 +205,26 @@ export function About() {
               </motion.div>
             ))}
           </div>
+        </motion.div>
+
+        {/* Numbers I like — quant / math interests, animated */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          className="mt-16"
+        >
+          <h2 className="text-2xl font-bold">Numbers I like</h2>
+          <p className="mt-1 font-mono text-[11px] text-ink/20">// markets, randomness, and graphs — the math I keep coming back to</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <RandomWalk />
+            <MiniGraph />
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-ink/45">
+            Off the clock I tinker with probability, statistics, and stochastic processes,
+            chart markets as a <span className="text-ink/65">FinVerse</span> analyst, and never
+            pass up a good graph problem — the same instincts that shape how I build systems.
+          </p>
         </motion.div>
 
         {/* Off the clock — terminal widget (stays dark in both themes) */}

@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Github, Linkedin, Mail, MapPin, Phone, Send, CheckCircle, Loader2, AlertCircle } from "lucide-react";
 import { useState } from "react";
+import { ProbCard } from "./widgets/ProbCard.jsx";
 
 // Formspree form ID, e.g. "xayzwbqr" — set VITE_FORMSPREE_ID in .env.
 // Falls back to a mailto: link when not configured.
@@ -203,6 +204,9 @@ export function Contact() {
                 <p><span className="text-emerald-400/50">side_effects:</span> may over-engineer your side project (feature, not bug)</p>
               </div>
             </div>
+
+            {/* Bayesian "P(reply)" — probability/statistics flavor */}
+            <ProbCard />
           </motion.div>
 
           {/* Right: Form */}

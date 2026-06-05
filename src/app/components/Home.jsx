@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight, Github, ExternalLink, Cpu, Brain, Zap, BookOpen, Target, ChevronRight, Coffee, Terminal } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import { Ticker } from "./widgets/Ticker.jsx";
 
 /* ───────────────────────── Typing Role Animation ───────────────────────── */
 
@@ -303,6 +304,11 @@ export function Home() {
                   {tech}
                 </span>
               ))}
+            </div>
+
+            {/* Personal "market" ticker — finance flavor */}
+            <div className="mt-5 max-w-[520px]">
+              <Ticker />
             </div>
 
             {/* CTAs */}
