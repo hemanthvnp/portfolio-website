@@ -1,78 +1,8 @@
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight, Github, ExternalLink, Cpu, ShieldCheck, Zap, Camera, TrendingUp, Terminal, Users } from "lucide-react";
-
-const projects = [
-  {
-    id: "throttlr",
-    title: "Throttlr",
-    subtitle: "High-Performance API Gateway",
-    description:
-      "A C++20 epoll-based API gateway running on Linux, delivering 50K+ req/s at ~300 µs P50 / ~1.8 ms P99 (benchmarked with wrk on 4-core/16 GB). Built for production-grade reliability with JWT authentication, rate limiting, circuit breaking, and zero-downtime hot reload.",
-    techStack: ["C++20", "epoll", "Linux", "Redis", "Kubernetes", "Prometheus", "JWT"],
-    features: ["50K+ req/s", "JWT Authentication", "Redis-backed Rate Limiting", "Circuit Breakers", "Load Balancing", "Kubernetes Deployment"],
-    highlights: [
-      "C++20 epoll gateway — 50K+ req/s, ~300 µs P50 / ~1.8 ms P99; JWT HS256 auth with token bucket rate limiting backed by Redis atomic Lua scripts",
-      "3-state circuit breaker FSM (count + failure-rate trip), four load balancing strategies including consistent hash (150 virtual nodes), and a LIFO connection pool with timerfd idle eviction",
-      "Prometheus metrics, structured JSON logs, Kubernetes rolling-update manifests (3 replicas, liveness/readiness probes), and SIGHUP hot reload with zero dropped connections",
-    ],
-    github: "https://github.com/hemanthvnp/Throttlr",
-    live: "https://throttlr-gateway.onrender.com/",
-    badge: "C++ · Systems",
-    badgeColor: "border-orange-400/30 bg-orange-400/10 text-orange-300",
-    gradient: "from-orange-400/12 via-ink/3 to-red-400/12",
-    accentDot: "bg-orange-400",
-    featurePills: "border-orange-400/15 bg-orange-400/[0.04] text-orange-300/70",
-    status: "Completed",
-    statusColor: "border-emerald-400/25 bg-emerald-400/8 text-emerald-300",
-  },
-  {
-    id: "margametis",
-    title: "MargaMetis",
-    subtitle: "Intelligent Route Optimizer",
-    description:
-      "Dijkstra, A*, Bidirectional A*, and Yen's K-Shortest built from scratch on a Chennai OSM graph (22K nodes, 55K edges). BiDir-A* hits 6 ms vs Dijkstra's 60 ms, exploring 12.9× fewer nodes. Natural-language route preferences converted to structured constraints via Groq LLaMA 3.1.",
-    techStack: ["Python", "FastAPI", "Redis", "Docker", "Groq LLaMA 3.1", "OSM"],
-    features: ["A*", "Bidirectional A*", "Yen's K Shortest Paths", "Redis Caching", "Natural Language Constraints"],
-    highlights: [
-      "Dijkstra, A*, Bidirectional A*, and Yen's K-Shortest from scratch on a Chennai OSM graph (22K nodes, 55K edges); BiDir-A* hit 6 ms vs Dijkstra's 60 ms, exploring 12.9× fewer nodes (1,470 vs 18,954)",
-      "Groq LLaMA 3.1 with few-shot prompting converts natural-language route preferences into structured constraint JSON; cost weights injected into the graph traversal at runtime, with rule-based fallback",
-      "Redis caching (route 1h, geocode 24h) cut repeat query latency from 3,500 ms to 16 ms; deployed as a 4-service Docker Compose stack on Vercel and Railway",
-    ],
-    github: "https://github.com/hemanthvnp/MargaMetis",
-    live: "https://marga-metis.vercel.app/",
-    badge: "Python · Algorithm",
-    badgeColor: "border-sky-400/30 bg-sky-400/10 text-sky-300",
-    gradient: "from-sky-400/12 via-ink/3 to-violet-400/12",
-    accentDot: "bg-sky-400",
-    featurePills: "border-sky-400/15 bg-sky-400/[0.04] text-sky-300/70",
-    status: "Completed",
-    statusColor: "border-emerald-400/25 bg-emerald-400/8 text-emerald-300",
-  },
-  {
-    id: "cinescope",
-    title: "CineScope",
-    subtitle: "Film Discovery & Recommendation Platform",
-    description:
-      "Hybrid recommender system combining TF-IDF + TruncatedSVD (20 latent factors) with a sparsity-aware 75/25 content–collaborative split. Natural-language queries handled by SBERT semantic search with TF-IDF fallback, asyncio parallel execution, and per-service circuit breakers.",
-    techStack: ["Python", "SBERT", "TF-IDF", "TruncatedSVD", "FastAPI", "Docker", "GitHub Actions"],
-    features: ["Collaborative Filtering", "Content-Based Recommendations", "Semantic Search", "Microservice Architecture"],
-    highlights: [
-      "Hybrid recommender (TF-IDF + TruncatedSVD, 20 latent factors) with a sparsity-aware 75/25 content–collaborative split; re-ranking via preference-bucket scoring and a quality formula with relaxed vote thresholds for non-English cinema",
-      "NL query pipeline: rule-based intent classification (8 types), SBERT semantic search (all-MiniLM-L6-v2) with TF-IDF fallback, asyncio parallel tool execution, and per-service circuit breakers",
-      "Offline evaluation suite — Hit Rate@K, Precision@K, MRR, NDCG@K via leave-one-out; 71 pytest tests gate a GitHub Actions pipeline building and deploying 5 Dockerized services",
-    ],
-    github: "https://github.com/hemanthvnp/CineScope",
-    live: "https://cinescope-frontend-2i07.onrender.com/",
-    badge: "Python · ML",
-    badgeColor: "border-violet-400/30 bg-violet-400/10 text-violet-300",
-    gradient: "from-violet-400/12 via-ink/3 to-cyan-400/12",
-    accentDot: "bg-violet-400",
-    featurePills: "border-violet-400/15 bg-violet-400/[0.04] text-violet-300/70",
-    status: "Completed",
-    statusColor: "border-emerald-400/25 bg-emerald-400/8 text-emerald-300",
-  },
-];
+import { projects } from "../data/projects.js";
+import { ProjectTerminal } from "./ProjectTerminal.jsx";
 
 const pillars = [
   { icon: Cpu, title: "System design", text: "Structured to keep logic readable and extendable as requirements grow." },
@@ -88,7 +18,7 @@ export function Projects() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-16"
+          className="mb-12"
         >
           <p className="text-sm uppercase tracking-[0.35em] text-ink/38">Selected work</p>
           <h1 className="mt-4 text-5xl font-bold md:text-6xl">Projects</h1>
@@ -117,14 +47,45 @@ export function Projects() {
           </div>
         </motion.div>
 
+        {/* Interactive terminal — explore project details by typing commands */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-16"
+          aria-label="Interactive project terminal"
+        >
+          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.35em] text-ink/35">explore via terminal</p>
+              <h2 className="mt-2 text-2xl font-bold">Browse the projects by command</h2>
+            </div>
+            <p className="font-mono text-[11px] text-ink/20">// type `help`, or tap a suggestion</p>
+          </div>
+          <p className="mb-5 max-w-2xl text-sm leading-relaxed text-ink/45">
+            Prefer the command line? Same details, your way. Try{" "}
+            <span className="font-mono text-cyan-300">ls</span>,{" "}
+            <span className="font-mono text-cyan-300">cat throttlr</span>, or{" "}
+            <span className="font-mono text-cyan-300">open margametis live</span>.
+          </p>
+          <ProjectTerminal />
+        </motion.section>
+
+        {/* Graphical breakdown */}
+        <div className="mb-8">
+          <p className="font-mono text-xs uppercase tracking-[0.35em] text-ink/35">or scroll — full breakdown</p>
+          <p className="mt-1 font-mono text-[11px] text-ink/18">// the same projects, graphical view</p>
+        </div>
+
         {/* Project Cards */}
         <div className="space-y-6">
           {projects.map((project, index) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 + index * 0.1 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ delay: index * 0.05 }}
               className={`relative overflow-hidden rounded-3xl border border-ink/10 bg-gradient-to-br ${project.gradient} p-8 transition-all hover:-translate-y-0.5 hover:border-ink/18 hover:shadow-lg`}
             >
               {/* Top row */}
@@ -225,8 +186,8 @@ export function Projects() {
         {/* Activities */}
         <motion.div
           initial={{ opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
           className="mt-12 overflow-hidden rounded-3xl border border-ink/10 bg-gradient-to-br from-violet-500/10 via-ink/3 to-cyan-500/10 p-8"
         >
           <h2 className="mb-1 text-2xl font-bold">Beyond the code</h2>
