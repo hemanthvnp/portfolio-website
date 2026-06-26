@@ -115,7 +115,7 @@ export function Contact() {
   const success = status === "success";
 
   return (
-    <div className="min-h-screen px-6 py-20">
+    <div className="min-h-screen px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <motion.div
@@ -124,7 +124,7 @@ export function Contact() {
           className="mb-16 text-center"
         >
           <p className="text-sm uppercase tracking-[0.35em] text-ink/38">Let's connect</p>
-          <h1 className="mt-4 text-5xl font-bold md:text-6xl">Get in touch</h1>
+          <h1 className="mt-4 text-4xl font-bold sm:text-5xl md:text-6xl">Get in touch</h1>
           <p className="mx-auto mt-5 max-w-xl text-xl text-ink/57">
             Open to SDE, backend systems, and ML engineering internships. I love hard
             problems — if you have a challenging role or project in mind, let's talk.

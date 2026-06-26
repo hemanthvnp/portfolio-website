@@ -12,7 +12,7 @@ const pillars = [
 
 export function Projects() {
   return (
-    <div className="min-h-screen px-6 py-20">
+    <div className="min-h-screen px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <motion.div
@@ -21,7 +21,7 @@ export function Projects() {
           className="mb-12"
         >
           <p className="text-sm uppercase tracking-[0.35em] text-ink/38">Selected work</p>
-          <h1 className="mt-4 text-5xl font-bold md:text-6xl">Projects</h1>
+          <h1 className="mt-4 text-4xl font-bold sm:text-5xl md:text-6xl">Projects</h1>
           <p className="mt-5 max-w-2xl text-xl text-ink/57">
             Systems that had to be fast, algorithms that had to be correct, models that had
             to generalize — every project started with a constraint that made it hard.
@@ -86,7 +86,7 @@ export function Projects() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ delay: index * 0.05 }}
-              className={`relative overflow-hidden rounded-3xl border border-ink/10 bg-gradient-to-br ${project.gradient} p-8 transition-all hover:-translate-y-0.5 hover:border-ink/18 hover:shadow-lg`}
+              className={`relative overflow-hidden rounded-3xl border border-ink/10 bg-gradient-to-br ${project.gradient} p-5 sm:p-8 transition-all hover:-translate-y-0.5 hover:border-ink/18 hover:shadow-lg`}
             >
               {/* Top row */}
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -188,7 +188,7 @@ export function Projects() {
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          className="mt-12 overflow-hidden rounded-3xl border border-ink/10 bg-gradient-to-br from-violet-500/10 via-ink/3 to-cyan-500/10 p-8"
+          className="mt-12 overflow-hidden rounded-3xl border border-ink/10 bg-gradient-to-br from-violet-500/10 via-ink/3 to-cyan-500/10 p-5 sm:p-8"
         >
           <h2 className="mb-1 text-2xl font-bold">Beyond the code</h2>
           <p className="mb-6 font-mono text-xs text-ink/28">// when the terminal is closed (rarely)</p>

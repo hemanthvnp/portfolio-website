@@ -167,9 +167,9 @@ const featuredProjects = [
   {
     title: "CineScope",
     subtitle: "Film Discovery Platform",
-    description: "Hybrid recommendation system combining collaborative filtering with content-based approaches and semantic search. 5 microservices because monoliths are a lifestyle choice.",
-    features: ["Collaborative Filtering", "Content-Based Recommendations", "Semantic Search", "Microservice Architecture"],
-    tech: ["Python", "SBERT", "TF-IDF", "TruncatedSVD", "FastAPI", "Docker"],
+    description: "Groq LLaMA 3.1 function calling classifies queries into 8 intent types and 10 entity fields. Hybrid TF-IDF + TruncatedSVD recommender with tiered fallback across 5 Dockerized microservices.",
+    features: ["Groq LLaMA 3.1 Function Calling", "Hybrid Recommender", "asyncio Parallel Calls", "Circuit Breakers", "71 pytest Tests", "GitHub Actions CI/CD"],
+    tech: ["Python", "FastAPI", "TF-IDF", "TruncatedSVD", "asyncio", "Docker"],
     github: "https://github.com/hemanthvnp/CineScope",
     live: "https://cinescope-frontend-2i07.onrender.com/",
     badge: "Python · ML",
@@ -184,27 +184,27 @@ const techStack = [
   {
     category: "Languages",
     pills: "border-cyan-400/20 bg-cyan-400/[0.06] text-cyan-300 hover:bg-cyan-400/12",
-    items: ["C++", "Python", "C", "JavaScript"],
+    items: ["Python", "C++", "C", "JavaScript"],
   },
   {
-    category: "Backend",
+    category: "Frameworks",
     pills: "border-violet-400/20 bg-violet-400/[0.06] text-violet-300 hover:bg-violet-400/12",
-    items: ["FastAPI", "Flask", "Node.js"],
+    items: ["FastAPI", "Flask", "React.js", "Node.js", "Express.js"],
   },
   {
     category: "Databases",
     pills: "border-sky-400/20 bg-sky-400/[0.06] text-sky-300 hover:bg-sky-400/12",
-    items: ["PostgreSQL", "MySQL", "MongoDB", "Redis"],
+    items: ["PostgreSQL", "MongoDB", "MySQL", "Redis"],
   },
   {
-    category: "Infrastructure",
+    category: "DevOps",
     pills: "border-emerald-400/20 bg-emerald-400/[0.06] text-emerald-300 hover:bg-emerald-400/12",
-    items: ["Docker", "Kubernetes", "Linux", "Prometheus"],
+    items: ["Docker", "Linux", "Git", "Postman"],
   },
   {
     category: "AI / ML",
     pills: "border-amber-400/20 bg-amber-400/[0.06] text-amber-300 hover:bg-amber-400/12",
-    items: ["Scikit-Learn", "Sentence Transformers", "NumPy"],
+    items: ["scikit-learn", "NumPy", "SciPy", "sentence-transformers", "asyncio"],
   },
 ];
 
@@ -222,7 +222,7 @@ export function Home() {
     <div className="min-h-screen">
 
       {/* ════════════════════ 1. HERO SECTION ════════════════════ */}
-      <section id="hero" className="relative overflow-hidden px-6">
+      <section id="hero" className="relative overflow-hidden px-4 sm:px-6">
         {/* Background accents */}
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ink/12 to-transparent" />
@@ -232,7 +232,7 @@ export function Home() {
 
         <div
           className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1fr_0.9fr]"
-          style={{ minHeight: "calc(100vh - 80px)" }}
+          style={{ minHeight: "calc(100dvh - 80px)" }}
         >
           {/* Left column */}
           <motion.div
@@ -251,21 +251,21 @@ export function Home() {
             </div>
 
             {/* Photo + Name */}
-            <div className="mt-7 flex items-center gap-5 sm:gap-6">
+            <div className="mt-7 flex items-center gap-4 sm:gap-6">
               <div className="relative shrink-0">
                 <div className="absolute -inset-[3px] rounded-full bg-gradient-to-br from-cyan-400/55 via-violet-500/30 to-emerald-400/45 blur-[4px]" />
                 <div className="absolute -inset-[1px] rounded-full bg-gradient-to-br from-cyan-400/30 via-violet-500/15 to-emerald-400/25" />
                 <img
                   src="/hemanth-bg.jpg"
                   alt="Hemanth Vasudev N P"
-                  className="relative h-[120px] w-[120px] rounded-full object-cover object-top shadow-2xl shadow-black/70"
+                  className="relative h-[90px] w-[90px] rounded-full object-cover object-top shadow-2xl shadow-black/70 sm:h-[120px] sm:w-[120px]"
                 />
-                <span className="absolute bottom-1.5 right-1.5 h-3.5 w-3.5 rounded-full border-[2.5px] border-paper bg-emerald-400 shadow shadow-emerald-400/50" />
+                <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full border-2 border-paper bg-emerald-400 shadow shadow-emerald-400/50 sm:bottom-1.5 sm:right-1.5 sm:h-3.5 sm:w-3.5" />
               </div>
 
               <div>
-                <p className="font-mono text-xs uppercase tracking-[0.28em] text-ink/35">hi, i am</p>
-                <h1 className="mt-1 bg-gradient-to-b from-ink via-ink to-ink/60 bg-clip-text font-bold leading-[1.04] tracking-tight text-transparent text-[2.6rem] sm:text-[3rem] lg:text-[3.4rem]">
+                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-ink/35 sm:text-xs">hi, i am</p>
+                <h1 className="mt-1 bg-gradient-to-b from-ink via-ink to-ink/60 bg-clip-text font-bold leading-[1.04] tracking-tight text-transparent text-[2rem] sm:text-[2.6rem] lg:text-[3.4rem]">
                   Hemanth<br />Vasudev N P
                 </h1>
               </div>
@@ -362,7 +362,7 @@ export function Home() {
       </section>
 
       {/* ════════════════════ 2. NUMBERS SECTION ════════════════════ */}
-      <section id="numbers" className="border-t border-ink/[0.06] px-6 py-20">
+      <section id="numbers" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -374,7 +374,7 @@ export function Home() {
             <p className="mt-1.5 font-mono text-[11px] text-ink/18">// because README stats weren't enough</p>
           </motion.div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
             {numbers.map((n, i) => (
               <motion.div
                 key={n.label}
@@ -391,7 +391,7 @@ export function Home() {
       </section>
 
       {/* ════════════════════ 3. FEATURED PROJECTS ════════════════════ */}
-      <section id="featured-projects" className="border-t border-ink/[0.06] px-6 py-24">
+      <section id="featured-projects" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-5xl">
           <motion.div
             initial={{ opacity: 0 }}
@@ -502,7 +502,7 @@ export function Home() {
       </section>
 
       {/* ════════════════════ 4. ABOUT ME ════════════════════ */}
-      <section id="about" className="border-t border-ink/[0.06] px-6 py-24">
+      <section id="about" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -558,7 +558,7 @@ export function Home() {
       </section>
 
       {/* ════════════════════ 5. TECH STACK ════════════════════ */}
-      <section id="tech-stack" className="border-t border-ink/[0.06] px-6 py-24">
+      <section id="tech-stack" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -604,7 +604,7 @@ export function Home() {
       </section>
 
       {/* ════════════════════ 6. CURRENT FOCUS ════════════════════ */}
-      <section id="current-focus" className="border-t border-ink/[0.06] px-6 py-20">
+      <section id="current-focus" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -640,7 +640,7 @@ export function Home() {
       </section>
 
       {/* ════════════════════ 7. CAREER GOAL ════════════════════ */}
-      <section id="career-goal" className="border-t border-ink/[0.06] px-6 py-20">
+      <section id="career-goal" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}

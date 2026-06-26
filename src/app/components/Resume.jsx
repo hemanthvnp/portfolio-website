@@ -12,22 +12,22 @@ const skillGroups = [
   {
     label: "Frameworks",
     pills: "border-violet-400/25 bg-violet-400/8 text-violet-300",
-    skills: ["FastAPI", "Flask", "ReactJS", "Node.js", "scikit-learn", "NumPy", "SciPy", "sentence-transformers"],
+    skills: ["FastAPI", "Flask", "React.js", "Node.js", "Express.js"],
+  },
+  {
+    label: "Libraries",
+    pills: "border-amber-400/25 bg-amber-400/8 text-amber-300",
+    skills: ["scikit-learn", "NumPy", "SciPy", "sentence-transformers", "asyncio"],
   },
   {
     label: "Databases",
     pills: "border-sky-400/25 bg-sky-400/8 text-sky-300",
-    skills: ["MySQL", "PostgreSQL", "MongoDB"],
+    skills: ["PostgreSQL", "MongoDB", "MySQL", "Redis"],
   },
   {
-    label: "Tools",
-    pills: "border-amber-400/25 bg-amber-400/8 text-amber-300",
-    skills: ["Git", "Redis", "Prometheus", "Postman"],
-  },
-  {
-    label: "DevOps & Cloud",
+    label: "DevOps",
     pills: "border-emerald-400/25 bg-emerald-400/8 text-emerald-300",
-    skills: ["Docker", "Kubernetes", "Linux", "GCP", "Azure"],
+    skills: ["Docker", "Linux", "Git", "Postman"],
   },
 ];
 
@@ -56,7 +56,7 @@ const education = [
 
 export function Resume() {
   return (
-    <div className="min-h-screen py-20 px-6">
+    <div className="min-h-screen px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <motion.div
@@ -65,13 +65,13 @@ export function Resume() {
           className="mb-12"
         >
           <p className="text-sm uppercase tracking-[0.35em] text-ink/38">Curriculum vitae</p>
-          <h1 className="mt-4 text-5xl font-bold md:text-6xl">Resume</h1>
+          <h1 className="mt-4 text-4xl font-bold sm:text-5xl md:text-6xl">Resume</h1>
           <p className="mt-5 max-w-2xl text-xl text-ink/57">
             A concise overview of experience, tools, and focus areas. Download the PDF below
             for a version aligned with the full portfolio.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-2.5">
+          <div className="mt-8 flex flex-wrap gap-2">
             <a
               href="https://github.com/hemanthvnp"
               target="_blank"
@@ -117,12 +117,12 @@ export function Resume() {
             data={resumePdf}
             type="application/pdf"
             width="100%"
-            style={{ height: "80vh", minHeight: "600px" }}
+            style={{ height: "clamp(400px, 80vh, 900px)", minHeight: "400px" }}
           >
             <iframe
               src={resumePdf}
               width="100%"
-              style={{ height: "80vh", minHeight: "600px", border: "none" }}
+              style={{ height: "clamp(400px, 80vh, 900px)", minHeight: "400px", border: "none" }}
               title="Resume — Hemanth Vasudev N P"
             >
               <p className="p-8 text-center text-ink/50">
