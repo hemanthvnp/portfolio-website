@@ -236,6 +236,7 @@ export function Home() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: "easeOut" }}
+            className="min-w-0 w-full"
           >
             {/* Availability badge */}
             <div className="inline-flex items-center gap-2 rounded-md border border-emerald-400/20 bg-emerald-400/[0.05] px-3 py-1.5 font-mono text-xs text-emerald-400">
@@ -273,7 +274,7 @@ export function Home() {
             </p>
 
             {/* Tagline */}
-            <p className="mt-3 text-sm leading-relaxed text-ink/55 sm:text-[0.95rem]">
+            <p className="mt-3 w-full text-sm leading-relaxed text-ink/55 sm:text-[0.95rem]">
               Building high-performance distributed systems, scalable backend services, and AI-powered applications.
             </p>
 
@@ -301,7 +302,7 @@ export function Home() {
             </div>
 
             {/* Personal "market" ticker — finance flavor */}
-            <div className="mt-4 sm:mt-5">
+            <div className="mt-4 w-full sm:mt-5">
               <Ticker />
             </div>
 
