@@ -42,16 +42,6 @@ const education = [
     dot: "bg-cyan-400",
     border: "border-cyan-400/25",
   },
-  {
-    level: "High School",
-    institution: "The TVS School, Madurai",
-    degree: "Higher Secondary",
-    period: "March 2024",
-    score: "90.3%",
-    scoreColor: "text-violet-300",
-    dot: "bg-violet-400",
-    border: "border-violet-400/25",
-  },
 ];
 
 export function Resume() {

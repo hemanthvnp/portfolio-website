@@ -140,8 +140,8 @@ const featuredProjects = [
     title: "Throttlr",
     subtitle: "High-Performance API Gateway",
     description: "A C++20 API Gateway built on epoll, delivering 50K+ req/s with sub-millisecond latency. Because Node.js was too easy.",
-    features: ["50K+ req/s", "JWT Authentication", "Redis-backed Rate Limiting", "Circuit Breakers", "Load Balancing", "Kubernetes Deployment"],
-    tech: ["C++20", "Linux", "Redis", "Kubernetes", "Docker", "Prometheus"],
+    features: ["50K+ req/s", "JWT Authentication", "Redis-backed Rate Limiting", "Circuit Breakers", "Load Balancing", "SIGHUP Hot Reload"],
+    tech: ["C++20", "Linux", "Redis", "Docker", "JWT"],
     github: "https://github.com/hemanthvnp/Throttlr",
     live: "https://throttlr-gateway.onrender.com/",
     badge: "C++ · Systems",
@@ -296,7 +296,7 @@ export function Home() {
 
             {/* Tech pills */}
             <div className="mt-5 flex flex-wrap gap-2">
-              {["C++", "Python", "FastAPI", "Redis", "Docker", "Kubernetes"].map((tech) => (
+              {["C++", "Python", "FastAPI", "Redis", "Docker", "Git"].map((tech) => (
                 <span
                   key={tech}
                   className="rounded border border-ink/[0.1] bg-ink/[0.03] px-2.5 py-1 font-mono text-xs text-ink/48"

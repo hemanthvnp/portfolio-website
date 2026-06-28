@@ -53,20 +53,12 @@ const journey = [
     border: "border-cyan-400/25",
   },
   {
-    period: "June 2024",
-    title: "High School",
-    place: "The TVS School, Madurai",
-    text: "Higher Secondary — 90.3%. Strong foundation in mathematics and sciences that directly shaped my interest in algorithms and systems.",
-    dot: "bg-violet-400",
-    border: "border-violet-400/25",
-  },
-  {
     period: "2024 — Present",
     title: "Backend & Systems, in practice",
     place: "Throttlr · MargaMetis · CineScope",
     text: "Three projects, three hard constraints: 50K+ req/s in C++, 218× faster routing with graph algorithms, and a hybrid recommender that had to generalize.",
-    dot: "bg-orange-400",
-    border: "border-orange-400/25",
+    dot: "bg-violet-400",
+    border: "border-violet-400/25",
   },
   {
     period: "Ongoing",

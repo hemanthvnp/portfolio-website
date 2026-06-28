@@ -9,12 +9,12 @@ export const projects = [
     tagline: "C++20 epoll API gateway — 50K+ req/s, sub-ms latency",
     description:
       "A C++20 epoll-based API gateway running on Linux, delivering 50K+ req/s at ~300 µs P50 / ~1.8 ms P99 (benchmarked with wrk on 4-core/16 GB). Built for production-grade reliability with JWT authentication, rate limiting, circuit breaking, and zero-downtime hot reload.",
-    techStack: ["C++20", "epoll", "Linux", "Redis", "Kubernetes", "Prometheus", "JWT"],
-    features: ["50K+ req/s", "JWT Authentication", "Redis-backed Rate Limiting", "Circuit Breakers", "Load Balancing", "Kubernetes Deployment"],
+    techStack: ["C++20", "epoll", "Linux", "Redis", "Docker", "JWT"],
+    features: ["50K+ req/s", "JWT Authentication", "Redis-backed Rate Limiting", "Circuit Breakers", "Load Balancing", "SIGHUP Hot Reload"],
     highlights: [
       "C++20 epoll gateway — 50K+ req/s, ~300 µs P50 / ~1.8 ms P99; JWT HS256 auth with token bucket rate limiting backed by Redis atomic Lua scripts",
-      "3-state circuit breaker FSM (count + failure-rate trip), four load balancing strategies including consistent hash (150 virtual nodes), and a LIFO connection pool with timerfd idle eviction",
-      "Prometheus metrics, structured JSON logs, Kubernetes rolling-update manifests (3 replicas, liveness/readiness probes), and SIGHUP hot reload with zero dropped connections",
+      "Solved distributed rate-limit races with an atomic Redis Lua script; wait-free circuit breaker via compare_exchange_strong for zero-mutex state transitions on the hot path",
+      "SIGHUP config reload with zero dropped connections; four load balancing strategies including consistent hash (150 virtual nodes)",
     ],
     github: "https://github.com/hemanthvnp/Throttlr",
     live: "https://throttlr-gateway.onrender.com/",

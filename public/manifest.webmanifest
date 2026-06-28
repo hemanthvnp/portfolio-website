@@ -1,0 +1,17 @@
+{
+  "name": "Hemanth Vasudev N P — Portfolio",
+  "short_name": "HV Portfolio",
+  "description": "Backend engineer building reliable systems, sharp APIs, and production-ready code.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050816",
+  "theme_color": "#050816",
+  "icons": [
+    {
+      "src": "/hemanth.jpg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
