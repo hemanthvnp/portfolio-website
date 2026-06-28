@@ -97,37 +97,39 @@ export default async function handler(req) {
   }
 
   // Transform Groq's OpenAI-style SSE into a plain text delta stream.
+  // Uses start+pump (not pull) so keep-alive packets never stall the stream.
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
   const reader = upstream.body.getReader();
-  let buffer = "";
 
   const stream = new ReadableStream({
-    async pull(controller) {
-      const { done, value } = await reader.read();
-      if (done) {
-        controller.close();
-        return;
-      }
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() ?? ""; // keep the trailing partial line
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith("data:")) continue;
-        const data = trimmed.slice(5).trim();
-        if (data === "[DONE]") {
-          controller.close();
-          return;
-        }
+    start(controller) {
+      let buffer = "";
+      async function pump() {
         try {
-          const parsed = JSON.parse(data);
-          const delta = parsed.choices?.[0]?.delta?.content;
-          if (delta) controller.enqueue(encoder.encode(delta));
-        } catch {
-          // ignore keep-alives / non-JSON lines
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) { controller.close(); return; }
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed.startsWith("data:")) continue;
+              const data = trimmed.slice(5).trim();
+              if (data === "[DONE]") { controller.close(); return; }
+              try {
+                const parsed = JSON.parse(data);
+                const delta = parsed.choices?.[0]?.delta?.content;
+                if (delta) controller.enqueue(encoder.encode(delta));
+              } catch { /* ignore non-JSON keep-alives */ }
+            }
+          }
+        } catch (err) {
+          controller.error(err);
         }
       }
+      pump();
     },
     cancel() {
       reader.cancel().catch(() => {});

@@ -230,16 +230,12 @@ export function Home() {
           <div className="absolute -left-40 top-1/3 h-72 w-72 rounded-full bg-violet-500/[0.04] blur-3xl" />
         </div>
 
-        <div
-          className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1fr_0.9fr]"
-          style={{ minHeight: "calc(100dvh - 80px)" }}
-        >
+        <div className="mx-auto grid max-w-7xl items-center gap-10 py-12 lg:grid-cols-[1fr_0.9fr] lg:py-0 lg:min-h-[calc(100dvh-80px)]">
           {/* Left column */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: "easeOut" }}
-            className="py-10 lg:py-0"
           >
             {/* Availability badge */}
             <div className="inline-flex items-center gap-2 rounded-md border border-emerald-400/20 bg-emerald-400/[0.05] px-3 py-1.5 font-mono text-xs text-emerald-400">
@@ -251,55 +247,53 @@ export function Home() {
             </div>
 
             {/* Photo + Name */}
-            <div className="mt-7 flex items-center gap-4 sm:gap-6">
+            <div className="mt-6 flex items-center gap-4 sm:gap-6">
               <div className="relative shrink-0">
                 <div className="absolute -inset-[3px] rounded-full bg-gradient-to-br from-cyan-400/55 via-violet-500/30 to-emerald-400/45 blur-[4px]" />
                 <div className="absolute -inset-[1px] rounded-full bg-gradient-to-br from-cyan-400/30 via-violet-500/15 to-emerald-400/25" />
                 <img
                   src="/hemanth-bg.jpg"
                   alt="Hemanth Vasudev N P"
-                  className="relative h-[90px] w-[90px] rounded-full object-cover object-top shadow-2xl shadow-black/70 sm:h-[120px] sm:w-[120px]"
+                  className="relative h-[80px] w-[80px] rounded-full object-cover object-top shadow-2xl shadow-black/70 sm:h-[110px] sm:w-[110px] lg:h-[130px] lg:w-[130px]"
                 />
-                <span className="absolute bottom-1 right-1 h-3 w-3 rounded-full border-2 border-paper bg-emerald-400 shadow shadow-emerald-400/50 sm:bottom-1.5 sm:right-1.5 sm:h-3.5 sm:w-3.5" />
+                <span className="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full border-2 border-paper bg-emerald-400 shadow shadow-emerald-400/50 sm:h-3.5 sm:w-3.5" />
               </div>
 
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-ink/35 sm:text-xs">hi, i am</p>
-                <h1 className="mt-1 bg-gradient-to-b from-ink via-ink to-ink/60 bg-clip-text font-bold leading-[1.04] tracking-tight text-transparent text-[2rem] sm:text-[2.6rem] lg:text-[3.4rem]">
+                <h1 className="mt-1 bg-gradient-to-b from-ink via-ink to-ink/60 bg-clip-text font-bold leading-[1.06] tracking-tight text-transparent text-[1.85rem] sm:text-[2.6rem] lg:text-[3.4rem]">
                   Hemanth<br />Vasudev N P
                 </h1>
               </div>
             </div>
 
             {/* Typing role */}
-            <p className="mt-4 font-mono text-lg text-cyan-400">
+            <p className="mt-4 font-mono text-base text-cyan-400 sm:text-lg">
               <span className="text-ink/25">&gt;</span> <TypingRole />
             </p>
 
             {/* Tagline */}
-            <p className="mt-3 max-w-[520px] text-[0.95rem] leading-relaxed text-ink/55">
+            <p className="mt-3 text-sm leading-relaxed text-ink/55 sm:text-[0.95rem]">
               Building high-performance distributed systems, scalable backend services, and AI-powered applications.
             </p>
 
-            {/* Short Introduction */}
-            <p className="mt-3 max-w-[480px] text-[0.9rem] leading-relaxed text-ink/42">
-              I'm an M.Sc. Software Systems student at PSG College of Technology.
-              My interests lie in backend engineering, distributed systems, infrastructure,
-              and performance optimization. I enjoy building production-style software
-              that focuses on reliability, scalability, and measurable impact.
+            {/* Short Introduction — hidden on small screens to keep hero tight */}
+            <p className="mt-2 hidden text-[0.9rem] leading-relaxed text-ink/42 sm:block max-w-[480px]">
+              M.Sc. Software Systems student at PSG College of Technology. Focused on
+              backend engineering, distributed systems, and performance optimization.
             </p>
 
-            {/* Developer humor */}
-            <p className="mt-2 font-mono text-[11px] text-ink/22">
+            {/* Developer humor — desktop only */}
+            <p className="mt-2 hidden font-mono text-[11px] text-ink/22 sm:block">
               <span className="text-emerald-400/50">//</span> running on caffeine · last slept: <span className="text-orange-300/40">undefined</span> · bugs fixed: &gt; bugs introduced <span className="text-ink/15">(probably)</span>
             </p>
 
             {/* Tech pills */}
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-wrap gap-1.5 sm:mt-5 sm:gap-2">
               {["C++", "Python", "FastAPI", "Redis", "Docker", "Git"].map((tech) => (
                 <span
                   key={tech}
-                  className="rounded border border-ink/[0.1] bg-ink/[0.03] px-2.5 py-1 font-mono text-xs text-ink/48"
+                  className="rounded border border-ink/[0.1] bg-ink/[0.03] px-2 py-0.5 font-mono text-xs text-ink/48 sm:px-2.5 sm:py-1"
                 >
                   {tech}
                 </span>
@@ -307,16 +301,16 @@ export function Home() {
             </div>
 
             {/* Personal "market" ticker — finance flavor */}
-            <div className="mt-5 max-w-[520px]">
+            <div className="mt-4 sm:mt-5">
               <Ticker />
             </div>
 
             {/* CTAs */}
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-5 grid grid-cols-2 gap-2.5 sm:flex sm:gap-3">
               <Link
                 to="/projects"
                 id="cta-projects"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-ink px-7 py-3 text-sm font-semibold text-paper transition-all hover:-translate-y-px hover:bg-ink/90"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-ink px-5 py-3 text-sm font-semibold text-paper transition-all hover:-translate-y-px hover:bg-ink/90 sm:px-7"
               >
                 View Projects
                 <ArrowRight className="h-4 w-4" />
@@ -326,7 +320,7 @@ export function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 id="cta-github"
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-ink/[0.12] bg-ink/[0.03] px-7 py-3 text-sm font-medium text-ink/70 transition-all hover:border-ink/20 hover:bg-ink/[0.06] hover:text-ink"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-ink/[0.12] bg-ink/[0.03] px-5 py-3 text-sm font-medium text-ink/70 transition-all hover:border-ink/20 hover:bg-ink/[0.06] hover:text-ink sm:px-7"
               >
                 <Github className="h-4 w-4" />
                 GitHub
