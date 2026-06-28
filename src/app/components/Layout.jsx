@@ -79,7 +79,7 @@ export function Layout() {
   ];
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="min-h-screen overflow-x-hidden bg-paper text-ink">
       <ScrollProgress />
       <ScrollToTop />
       <AITwin />
