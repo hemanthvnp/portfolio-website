@@ -4,24 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hemanth Vasudev | Backend Engineer</title>
-    <meta name="description" content="Hemanth Vasudev — Backend engineer building reliable systems, sharp APIs, and production-ready code. PSG College of Technology. Open to internships and collaborations." />
-    <meta name="theme-color" content="#050816" />
+    <meta name="description" content="Backend intern at EWhizard. Cut a stack from 9 to 5 containers, built a gateway at 28.5K req/s, shipped a 150-test multi-tenant platform." />
+    <meta name="theme-color" content="#fbf6ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
     <meta name="robots" content="index,follow" />
 
     <!-- Open Graph / Twitter -->
     <meta property="og:title" content="Hemanth Vasudev | Backend Engineer" />
-    <meta property="og:description" content="Building robust, scalable systems and APIs. Explore projects and contact me for collaborations." />
+    <meta property="og:description" content="Backend intern at EWhizard. Cut a stack from 9 to 5 containers, built a gateway at 28.5K req/s, shipped a 150-test multi-tenant platform." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/og-image.svg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Hemanth Vasudev | Backend Engineer" />
-    <meta name="twitter:description" content="Building robust, scalable systems and APIs. Explore projects and contact me for collaborations." />
+    <meta name="twitter:description" content="Backend intern at EWhizard. Cut a stack from 9 to 5 containers, built a gateway at 28.5K req/s, shipped a 150-test multi-tenant platform." />
     <meta name="twitter:image" content="/og-image.svg" />
 
     <!-- Performance / Fonts / Manifest -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="msapplication-TileColor" content="#0f172a" />
   </head>
@@ -32,7 +33,7 @@
       (function () {
         try {
           var t = localStorage.getItem("theme");
-          var isLight = t === "light";
+          var isLight = t ? t === "light" : window.matchMedia("(prefers-color-scheme: light)").matches;
           document.documentElement.classList.toggle("dark", !isLight);
           document.documentElement.classList.toggle("light", isLight);
           document.documentElement.style.colorScheme = isLight ? "light" : "dark";

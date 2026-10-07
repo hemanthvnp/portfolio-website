@@ -1,682 +1,349 @@
-import { motion } from "motion/react";
-import { Link } from "react-router";
-import { ArrowRight, Github, ExternalLink, Cpu, Brain, Zap, BookOpen, Target, ChevronRight, Coffee, Terminal } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
-import { Ticker } from "./widgets/Ticker.jsx";
+import { useRef, useEffect, useState } from "react";
+import { Github, ExternalLink, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence, useScroll, useTransform, useInView, useReducedMotion, animate } from "motion/react";
+import { Reveal } from "./Reveal";
 
-/* ───────────────────────── Typing Role Animation ───────────────────────── */
-
-function TypingRole() {
-  const roles = ["Backend & Systems Engineer", "Software Development Engineer", "Applied ML Engineer"];
-  const [roleIndex, setRoleIndex] = useState(0);
-  const [typed, setTyped] = useState("");
-  const [deleting, setDeleting] = useState(false);
-
-  useEffect(() => {
-    const current = roles[roleIndex];
-    if (!deleting && typed === current) {
-      const t = setTimeout(() => setDeleting(true), 2600);
-      return () => clearTimeout(t);
-    }
-    if (deleting && typed === "") {
-      setDeleting(false);
-      setRoleIndex((i) => (i + 1) % roles.length);
-      return;
-    }
-    const speed = deleting ? 32 : 68;
-    const t = setTimeout(() => {
-      setTyped(deleting ? typed.slice(0, -1) : current.slice(0, typed.length + 1));
-    }, speed);
-    return () => clearTimeout(t);
-  }, [typed, deleting, roleIndex]);
-
-  return (
-    <span>
-      {typed}
-      <span className="ml-0.5 inline-block h-[0.85em] w-0.5 animate-pulse bg-cyan-400 align-middle" />
-    </span>
-  );
-}
-
-/* ───────────────────────── Benchmark Terminal Widget ───────────────────── */
-
-const BENCH_LINES = [
-  [{ t: "$ ", c: "text-emerald-400" }, { t: "wrk", c: "text-cyan-300" }, { t: " -t4 -c100 -d30s http://throttlr:8080/", c: "text-ink/50" }],
-  [],
-  [{ t: "Running 30s test @ ", c: "text-ink/32" }, { t: "http://throttlr:8080/", c: "text-sky-400/60" }],
-  [{ t: "  4 threads and 100 connections", c: "text-ink/32" }],
-  [],
-  [{ t: "Thread Stats   Avg      Stdev     Max", c: "text-ink/25 italic" }],
-  [{ t: "  Latency   ", c: "text-ink/50" }, { t: "298µs", c: "text-cyan-300" }, { t: "   112µs  ", c: "text-ink/32" }, { t: "1.82ms", c: "text-orange-300" }],
-  [{ t: "  Req/Sec  ", c: "text-ink/50" }, { t: " 12.7k", c: "text-ink/70" }, { t: "    1.1k   ", c: "text-ink/32" }, { t: "15.2k", c: "text-ink/70" }],
-  [],
-  [{ t: "  50%  ", c: "text-ink/32" }, { t: "298µs", c: "text-emerald-300" }, { t: "   ← P50", c: "text-ink/22 italic" }],
-  [{ t: "  99%  ", c: "text-ink/32" }, { t: "1.82ms", c: "text-orange-300" }, { t: "  ← P99", c: "text-ink/22 italic" }],
-  [],
-  [{ t: "Requests/sec:  ", c: "text-ink/50" }, { t: "50,847.23", c: "text-ink font-bold" }],
-  [{ t: "Transfer/sec:    ", c: "text-ink/50" }, { t: "8.42MB", c: "text-ink/65" }],
+// Every stat counts when scrolled into view: `from` -> `to`, wrapped in prefix/suffix.
+const STATS = [
+  { prefix: "9→", from: 9, to: 5, label: "containers in the deployed stack", project: "EWhizard" },
+  { to: 28.5, decimals: 1, suffix: "K", unit: "req/s", label: "sustained throughput, zero failures", project: "Throttlr" },
+  { to: 150, label: "passing tests", project: "ArthaDhruva" },
 ];
 
-function BenchmarkWidget() {
-  return (
-    <div className="surface-dark overflow-hidden rounded-xl border border-ink/[0.08] bg-[#0a0a0a] shadow-2xl shadow-black">
-      <div className="flex items-center gap-2 border-b border-ink/[0.06] bg-[#111] px-4 py-3">
-        <div className="flex gap-1.5">
-          <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-          <div className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
-          <div className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-        </div>
-        <span className="ml-2 font-mono text-xs text-ink/28">throttlr — wrk benchmark · 4-core / 16 GB</span>
-      </div>
-      <div className="py-4 pl-4 pr-5 font-mono text-[12.5px] leading-[1.75]">
-        {BENCH_LINES.map((tokens, i) => (
-          <div key={i} className="whitespace-pre">
-            {tokens.length === 0 ? " " : tokens.map(({ t, c }, j) => (
-              <span key={j} className={c}>{t}</span>
-            ))}
-          </div>
-        ))}
-        <div className="mt-2 flex items-center gap-2 rounded-md border border-ink/[0.06] bg-ink/[0.03] px-3 py-1.5">
-          <span className="text-emerald-400">$</span>
-          <span className="text-ink/35">_</span>
-          <span className="inline-block h-[13px] w-1.5 animate-pulse rounded-sm bg-ink/45 align-middle" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ───────────────────────── Animated Counter ───────────────────────── */
-
-function AnimatedStat({ value, suffix = "", label, delay = 0 }) {
-  const [displayed, setDisplayed] = useState("0");
+function Stat({ prefix = "", from = 0, to, decimals = 0, suffix = "", unit, label, project, index = 0 }) {
   const ref = useRef(null);
-  const started = useRef(false);
-
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const reduce = useReducedMotion();
+  const fmt = (v) => prefix + v.toFixed(decimals) + suffix;
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting || started.current) return;
-        started.current = true;
-        const num = parseFloat(value);
-        if (isNaN(num)) { setDisplayed(value); return; }
-        if (!Number.isInteger(num)) { setDisplayed(value); return; }
-        let curr = 0;
-        const increment = Math.max(1, Math.ceil(num / 28));
-        const timer = setInterval(() => {
-          curr = Math.min(curr + increment, num);
-          setDisplayed(String(curr));
-          if (curr >= num) clearInterval(timer);
-        }, 35);
-      },
-      { threshold: 0.5 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [value]);
-
+    if (!inView || reduce || !ref.current) return;
+    const c = animate(from, to, {
+      duration: 1.2,
+      ease: "easeOut",
+      onUpdate: (v) => { if (ref.current) ref.current.textContent = fmt(v); },
+    });
+    return () => c.stop();
+  }, [inView]);
   return (
-    <div ref={ref} className="text-center">
-      <div className="text-3xl font-bold tabular-nums text-ink sm:text-4xl">
-        {displayed}{suffix}
-      </div>
-      <div className="mt-1.5 font-mono text-[11px] uppercase tracking-widest text-ink/35">{label}</div>
-    </div>
+    <motion.div
+      className="flex items-baseline gap-4 sm:block"
+      initial={reduce ? false : { opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
+    >
+      <dd className="m-0 min-w-[6.5rem] font-mono text-3xl font-bold tabular-nums text-amb sm:min-w-0 sm:text-5xl">
+        <span ref={ref}>{fmt(to)}</span>
+        {unit && <span className="ml-1.5 text-sm font-normal text-ink/70 sm:text-base">{unit}</span>}
+      </dd>
+      <dt className="t-small sm:mt-1">
+        {label}
+        <span className="hidden sm:inline"><br /></span><span className="sm:hidden"> · </span>
+        {project}
+      </dt>
+    </motion.div>
   );
 }
 
-/* ───────────────────────── Data ───────────────────────── */
+const HEADLINE = "I engineer software that performs when it matters.".split(" ");
 
-const numbers = [
-  { value: "3", suffix: "", label: "Production-Style Projects" },
-  { value: "50", suffix: "K+", label: "Req/s API Gateway" },
-  { value: "22", suffix: "K", label: "Node Route Graph" },
-  { value: "71", suffix: "", label: "Automated Tests" },
-  { value: "5", suffix: "", label: "Dockerized Services" },
+// Heartbeat line under the headline: flat rules stretch, the spike keeps its proportions at any width.
+function Pulse() {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="mt-8 flex h-6 w-full max-w-3xl items-center"
+      initial={reduce ? false : { clipPath: "inset(-4px 100% -4px 0)" }}
+      animate={{ clipPath: "inset(-4px 0% -4px 0)" }}
+      transition={{ duration: 1.4, ease: "easeInOut", delay: 0.9 }}
+    >
+      <div className="h-[1.5px] flex-1 bg-acc" />
+      <svg viewBox="0 0 56 24" className="h-6 w-14 shrink-0 overflow-visible" fill="none" stroke="rgb(var(--acc))" strokeWidth="1.5" strokeLinejoin="round">
+        <path d="M0 12 L16 2 L32 22 L42 8 L50 14 L56 12" />
+      </svg>
+      <div className="h-[1.5px] flex-[1.4] bg-acc" />
+    </motion.div>
+  );
+}
+
+/* Hero hierarchy (reading order = importance):
+   1 CLAIM    h1, largest, full ink: what I do and why it matters
+   2 IDENTITY name (ink, semibold) + role (muted): who is claiming it
+   3 PULSE    the heartbeat line: the claim's visual signature
+   4 THESIS   "Design. Build. Withstand.": quiet mono sign-off
+   5 ACTION   one primary CTA (accent fill), one secondary (ghost)
+   6 PROOF    the stats row just below the fold */
+function Hero() {
+  const ref = useRef(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const fade = (delay) => ({
+    initial: reduce ? false : { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.6, ease: "easeOut", delay },
+  });
+  return (
+    <section ref={ref} className="wrap flex flex-col justify-center py-16 sm:min-h-[min(calc(100svh-4.5rem),50rem)]">
+      <motion.div style={reduce ? undefined : { opacity, y }}>
+        {/* 2 IDENTITY */}
+        <p className="m-0 font-mono text-sm">
+          <span className="font-semibold tracking-wide">Hemanth Vasudev N P</span>
+          <span className="block text-ink/70 sm:inline"><span className="hidden sm:inline"> / </span>Backend Engineering Intern</span>
+        </p>
+
+        {/* 1 CLAIM */}
+        <h1 className="font-display mt-8 max-w-3xl text-[clamp(2.75rem,8vw,5.5rem)] font-bold leading-[1.0] tracking-[-0.035em]">
+          {HEADLINE.map((w, i) => (
+            <span key={i} className="inline-block overflow-hidden align-bottom">
+              <motion.span
+                className={`inline-block ${w === "performs" ? "text-acc" : ""}`}
+                initial={reduce ? false : { y: "100%" }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 + i * 0.08 }}
+              >
+                {w}&nbsp;
+              </motion.span>
+            </span>
+          ))}
+        </h1>
+
+        {/* 3 PULSE */}
+        <Pulse />
+
+        {/* 4 THESIS */}
+        <motion.p className="m-0 mt-6 font-mono text-sm tracking-wide text-ink/70" {...fade(1)}>
+          Design. Build. <span className="font-semibold text-ink">Withstand.</span>
+        </motion.p>
+
+        {/* 5 ACTION */}
+        <motion.div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center" {...fade(1.1)}>
+          <a href="#projects" className="btn btn-primary">View work</a>
+          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Resume</a>
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+}
+
+const EXPERIENCE = [
+  {
+    title: "EWhizard",
+    constraint: "Backend Engineering Intern · Mar – Aug 2026",
+    bullets: [
+      <>Cut the deployed stack from <b>9 to 5 containers</b> by merging 4 parsing services into one worker.</>,
+      <>Fixed a <b>cross-user data-isolation vulnerability</b> in an LLM-generated SQL pipeline across 2 production endpoints.</>,
+      <>Built an MCP server with <b>6 tools</b> for Figma-to-code conversion.</>,
+    ],
+    summary: "9 → 5 containers",
+    cmd: "$ git log --stat",
+    run: [["containers", "9 → 5"], ["endpoints secured", "2"], ["MCP tools", "6"]],
+    tech: "Python · APScheduler · LLM pipelines",
+    live: "https://proleap.ewhizard.tech/",
+  },
 ];
 
-const featuredProjects = [
+const PROJECTS = [
   {
-    title: "Throttlr",
-    subtitle: "High-Performance API Gateway",
-    description: "A C++20 API Gateway built on epoll, delivering 50K+ req/s with sub-millisecond latency. Because Node.js was too easy.",
-    features: ["50K+ req/s", "JWT Authentication", "Redis-backed Rate Limiting", "Circuit Breakers", "Load Balancing", "SIGHUP Hot Reload"],
-    tech: ["C++20", "Linux", "Redis", "Docker", "JWT"],
-    github: "https://github.com/hemanthvnp/Throttlr",
-    live: "https://throttlr-gateway.onrender.com/",
-    badge: "C++ · Systems",
-    badgeClass: "border-orange-400/25 bg-orange-400/[0.07] text-orange-300",
-    gradient: "from-orange-400/[0.06] to-transparent",
-    border: "border-orange-400/15",
-    dotColor: "bg-orange-400",
+    title: "ArthaDhruva",
+    constraint: "Survives tenant leaks",
+    text: "Multi-tenant credit risk platform for mortgage lenders. Scores loan default risk and projects portfolio losses, with tenants isolated by Row Level Security (RLS).",
+    hard: "Making parallel Monte Carlo runs reproducible on any thread count, by seeding each scenario independently.",
+    summary: "150 tests · RLS isolation",
+    run: [["isolation", "RLS"], ["tests", "150 passing"]],
+    tech: "Spring Boot · PostgreSQL · Docker · Caddy",
+    github: "https://github.com/hemanthvnp/ArthaDhruva",
+    live: "https://arthadhruva.azurewebsites.net/",
   },
   {
-    title: "MargaMetis",
-    subtitle: "Intelligent Route Optimizer",
-    description: "A route optimization platform using graph algorithms and LLM-powered preference parsing. Reduced repeated route queries from 3.5s to 16ms — 218× faster. Yes, we measured.",
-    features: ["A*", "Bidirectional A*", "Yen's K Shortest Paths", "Redis Caching", "Natural Language Constraints"],
-    tech: ["Python", "FastAPI", "Redis", "Docker", "Groq LLaMA 3.1", "OSM"],
-    github: "https://github.com/hemanthvnp/MargaMetis",
-    live: "https://marga-metis.vercel.app/",
-    badge: "Python · Algorithm",
-    badgeClass: "border-sky-400/25 bg-sky-400/[0.07] text-sky-300",
-    gradient: "from-sky-400/[0.06] to-transparent",
-    border: "border-sky-400/15",
-    dotColor: "bg-sky-400",
+    title: "Throttlr",
+    constraint: "Survives overload and server failure",
+    text: "API gateway with TLS, JWT, rate limiting and automatic failover.",
+    hard: "Reloading rate limits and routing rules live, with no cold start or dropped connections.",
+    summary: "28.5K req/s · P99 2.82 ms",
+    run: [["throughput", "28,548 req/s"], ["p99", "2.82 ms"], ["failures", "0 / 857K"]],
+    tech: "C++ · TLS · JWT",
+    github: "https://github.com/hemanthvnp/Throttlr",
+    live: "https://throttlr-gateway.onrender.com/",
   },
   {
     title: "CineScope",
-    subtitle: "Film Discovery Platform",
-    description: "Groq LLaMA 3.1 function calling classifies queries into 8 intent types and 10 entity fields. Hybrid TF-IDF + TruncatedSVD recommender with tiered fallback across 5 Dockerized microservices.",
-    features: ["Groq LLaMA 3.1 Function Calling", "Hybrid Recommender", "asyncio Parallel Calls", "Circuit Breakers", "71 pytest Tests", "GitHub Actions CI/CD"],
-    tech: ["Python", "FastAPI", "TF-IDF", "TruncatedSVD", "asyncio", "Docker"],
+    constraint: "Survives LLM outages",
+    text: "LLM-powered movie search that plans parallel TMDB and ML calls across 5 microservices.",
+    hard: "Staying fast and available when the LLM fails: circuit breakers, two-tier caching and fallbacks.",
+    summary: "~2 s → <5 ms repeats",
+    run: [["repeat search", "~2 s → <5 ms"], ["tests", "83 gate every release"]],
+    tech: "Python · FastAPI · Docker · GitHub Actions",
     github: "https://github.com/hemanthvnp/CineScope",
     live: "https://cinescope-frontend-2i07.onrender.com/",
-    badge: "Python · ML",
-    badgeClass: "border-violet-400/25 bg-violet-400/[0.07] text-violet-300",
-    gradient: "from-violet-400/[0.06] to-transparent",
-    border: "border-violet-400/15",
-    dotColor: "bg-violet-400",
   },
 ];
 
-const techStack = [
-  {
-    category: "Languages",
-    pills: "border-cyan-400/20 bg-cyan-400/[0.06] text-cyan-300 hover:bg-cyan-400/12",
-    items: ["Python", "C++", "C", "JavaScript"],
-  },
-  {
-    category: "Frameworks",
-    pills: "border-violet-400/20 bg-violet-400/[0.06] text-violet-300 hover:bg-violet-400/12",
-    items: ["FastAPI", "Flask", "React.js", "Node.js", "Express.js"],
-  },
-  {
-    category: "Databases",
-    pills: "border-sky-400/20 bg-sky-400/[0.06] text-sky-300 hover:bg-sky-400/12",
-    items: ["PostgreSQL", "MongoDB", "MySQL", "Redis"],
-  },
-  {
-    category: "DevOps",
-    pills: "border-emerald-400/20 bg-emerald-400/[0.06] text-emerald-300 hover:bg-emerald-400/12",
-    items: ["Docker", "Linux", "Git", "Postman"],
-  },
-  {
-    category: "AI / ML",
-    pills: "border-amber-400/20 bg-amber-400/[0.06] text-amber-300 hover:bg-amber-400/12",
-    items: ["scikit-learn", "NumPy", "SciPy", "sentence-transformers", "asyncio"],
-  },
+function ProjectRow({ p, index, open, onToggle, numbered }) {
+  const reduce = useReducedMotion();
+  const id = `proj-${index}`;
+  return (
+    <Reveal as="li" className="group">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-controls={id}
+        className={`grid w-full items-baseline gap-4 py-6 text-left ${
+          numbered ? "grid-cols-[2.5rem_1fr_auto] sm:grid-cols-[4rem_1fr_auto_auto]" : "grid-cols-[1fr_auto] sm:grid-cols-[1fr_auto_auto]"
+        }`}
+      >
+        {numbered && (
+          <span className="font-mono text-sm text-acc">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+        )}
+        <span>
+          <span className="font-display block text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold leading-tight tracking-tight transition-colors group-hover:text-acc">
+            {p.title}
+          </span>
+          <span className="eyebrow mt-1 block">{p.constraint}</span>
+          <span className={`mt-2 block font-mono text-sm text-ink/70 sm:hidden ${open ? "hidden" : ""}`}>{p.summary}</span>
+        </span>
+        <span className={`hidden font-mono text-sm text-ink/70 transition-opacity sm:block ${open ? "opacity-0" : "opacity-100"}`}>
+          {p.summary}
+        </span>
+        <ChevronDown aria-hidden="true" className={`h-5 w-5 self-center text-acc transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            id={id}
+            initial={reduce ? false : { height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="overflow-hidden"
+          >
+            <div className={`grid gap-6 pb-8 sm:gap-4 ${numbered ? "sm:grid-cols-[4rem_1fr]" : ""}`}>
+              {numbered && <div className="hidden sm:block" />}
+              <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+                <div>
+                  {p.bullets ? (
+                    <ul className="m-0 list-disc space-y-3 pl-5 marker:text-acc">
+                      {p.bullets.map((b, i) => (
+                        <li key={i} className="t-body [&_b]:font-semibold [&_b]:text-ink">{b}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <>
+                      <p className="t-body m-0">{p.text}</p>
+                      <p className="t-small mt-4"><span className="eyebrow mr-2">Hardest part</span>{p.hard}</p>
+                    </>
+                  )}
+                  <p className="t-small mt-4 font-mono">{p.tech}</p>
+                  {(p.github || p.live) && <div className="mt-4 flex gap-6 text-sm">
+                    {p.github && <a href={p.github} target="_blank" rel="noopener noreferrer" className="link-arrow tap inline-flex items-center gap-1.5">
+                      <Github className="h-4 w-4" /> Source
+                    </a>}
+                    {p.live && (
+                      <a href={p.live} target="_blank" rel="noopener noreferrer" className="link-arrow tap inline-flex items-center gap-1.5">
+                        <ExternalLink className="h-4 w-4" /> Live
+                      </a>
+                    )}
+                  </div>}
+                </div>
+                <div className="self-start rounded-md border border-ink/10 bg-surface p-4 font-mono text-xs leading-6">
+                  <p className="m-0 text-ink/70">{p.cmd ?? `$ run ${p.title.toLowerCase()}`}</p>
+                  {!p.cmd && <p className="m-0 font-semibold text-ok">200 OK</p>}
+                  {p.run.map(([k, v]) => (
+                    <p key={k} className="m-0 flex justify-between gap-4 text-ink/80">
+                      <span className="text-ink/70">{k}</span>
+                      <span>{v}</span>
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Reveal>
+  );
+}
+
+function Rows({ items, initialOpen = 0 }) {
+  const [open, setOpen] = useState(initialOpen);
+  return (
+    <ol className="m-0 list-none divide-y divide-ink/10 border-y border-ink/10 p-0">
+      {items.map((p, i) => (
+        <ProjectRow key={p.title} p={p} index={i} numbered={items.length > 1} open={open === i} onToggle={() => setOpen(open === i ? -1 : i)} />
+      ))}
+    </ol>
+  );
+}
+
+function Block({ id, eyebrow, title, note, children }) {
+  return (
+    <section id={id} className="section">
+      <Reveal className="wrap grid gap-10 md:grid-cols-[1fr_2.4fr] md:gap-12">
+        <div className="md:sticky md:top-24 md:self-start">
+          <p className="eyebrow !text-acc">{eyebrow}</p>
+          <h2 className="t-h2 mt-3">{title}</h2>
+          {note && <p className="t-small mt-3 max-w-[16rem]">{note}</p>}
+        </div>
+        <div>{children}</div>
+      </Reveal>
+    </section>
+  );
+}
+
+// Backend-first: one line per layer, no labels, so it reads as a stack rather than an inventory.
+const STACK = [
+  "Python · Java · C++ · SQL",
+  "Spring Boot · FastAPI · Node.js",
+  "PostgreSQL · MySQL · MongoDB · Redis",
+  "Docker · Git · GitHub Actions",
 ];
 
-const currentFocus = [
-  "Advanced System Design",
-  "Distributed Systems",
-  "Linux Internals",
-  "MLOps & Applied ML",
+const BACKGROUND = [
+  ["Education", "M.Sc. (Integrated) Software Systems, PSG College of Technology · 2024–2029 · CGPA 8.43/10"],
+  ["Activities", ["Deputy Coordinator, CSA Tech Team (PSGCT)", "Member, FinVerse finance club"]],
 ];
-
-/* ───────────────────────── HOME COMPONENT ───────────────────────── */
 
 export function Home() {
   return (
-    <div className="min-h-screen">
+    <div>
+      <Hero />
 
-      {/* ════════════════════ 1. HERO SECTION ════════════════════ */}
-      <section id="hero" className="relative overflow-hidden px-4 sm:px-6">
-        {/* Background accents */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ink/12 to-transparent" />
-          <div className="absolute left-1/2 top-0 h-96 w-[900px] -translate-x-1/2 rounded-full bg-cyan-400/[0.025] blur-3xl" />
-          <div className="absolute -left-40 top-1/3 h-72 w-72 rounded-full bg-violet-500/[0.04] blur-3xl" />
-        </div>
-
-        <div className="mx-auto grid max-w-7xl items-center gap-10 py-12 lg:grid-cols-[1fr_0.9fr] lg:py-0 lg:min-h-[calc(100dvh-80px)]">
-          {/* Left column */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
-            className="min-w-0 w-full"
-          >
-            {/* Availability badge */}
-            <div className="inline-flex items-center gap-2 rounded-md border border-emerald-400/20 bg-emerald-400/[0.05] px-3 py-1.5 font-mono text-xs text-emerald-400">
-              <span
-                className="h-1.5 w-1.5 rounded-full bg-emerald-400"
-                style={{ animation: "pulse 2s ease-in-out infinite" }}
-              />
-              available for internships &amp; collaborations
-            </div>
-
-            {/* Photo + Name */}
-            <div className="mt-6 flex items-center gap-4 sm:gap-6">
-              <div className="relative shrink-0">
-                <div className="absolute -inset-[3px] rounded-full bg-gradient-to-br from-cyan-400/55 via-violet-500/30 to-emerald-400/45 blur-[4px]" />
-                <div className="absolute -inset-[1px] rounded-full bg-gradient-to-br from-cyan-400/30 via-violet-500/15 to-emerald-400/25" />
-                <img
-                  src="/hemanth-bg.jpg"
-                  alt="Hemanth Vasudev N P"
-                  className="relative h-[80px] w-[80px] rounded-full object-cover object-top shadow-2xl shadow-black/70 sm:h-[110px] sm:w-[110px] lg:h-[130px] lg:w-[130px]"
-                />
-                <span className="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full border-2 border-paper bg-emerald-400 shadow shadow-emerald-400/50 sm:h-3.5 sm:w-3.5" />
-              </div>
-
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-ink/35 sm:text-xs">hi, i am</p>
-                <h1 className="mt-1 bg-gradient-to-b from-ink via-ink to-ink/60 bg-clip-text font-bold leading-[1.06] tracking-tight text-transparent text-[1.85rem] sm:text-[2.6rem] lg:text-[3.4rem]">
-                  Hemanth<br />Vasudev N P
-                </h1>
-              </div>
-            </div>
-
-            {/* Typing role */}
-            <p className="mt-4 font-mono text-base text-cyan-400 sm:text-lg">
-              <span className="text-ink/25">&gt;</span> <TypingRole />
-            </p>
-
-            {/* Tagline */}
-            <p className="mt-3 w-full text-sm leading-relaxed text-ink/55 sm:text-[0.95rem]">
-              Building high-performance distributed systems, scalable backend services, and AI-powered applications.
-            </p>
-
-            {/* Short Introduction — hidden on small screens to keep hero tight */}
-            <p className="mt-2 hidden text-[0.9rem] leading-relaxed text-ink/42 sm:block max-w-[480px]">
-              M.Sc. Software Systems student at PSG College of Technology. Focused on
-              backend engineering, distributed systems, and performance optimization.
-            </p>
-
-            {/* Developer humor — desktop only */}
-            <p className="mt-2 hidden font-mono text-[11px] text-ink/22 sm:block">
-              <span className="text-emerald-400/50">//</span> running on caffeine · last slept: <span className="text-orange-300/40">undefined</span> · bugs fixed: &gt; bugs introduced <span className="text-ink/15">(probably)</span>
-            </p>
-
-            {/* Tech pills */}
-            <div className="mt-4 flex flex-wrap gap-1.5 sm:mt-5 sm:gap-2">
-              {["C++", "Python", "FastAPI", "Redis", "Docker", "Git"].map((tech) => (
-                <span
-                  key={tech}
-                  className="rounded border border-ink/[0.1] bg-ink/[0.03] px-2 py-0.5 font-mono text-xs text-ink/48 sm:px-2.5 sm:py-1"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-
-            {/* Personal "market" ticker — finance flavor */}
-            <div className="mt-4 w-full sm:mt-5">
-              <Ticker />
-            </div>
-
-            {/* CTAs */}
-            <div className="mt-5 grid grid-cols-2 gap-2.5 sm:flex sm:gap-3">
-              <Link
-                to="/projects"
-                id="cta-projects"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-ink px-5 py-3 text-sm font-semibold text-paper transition-all hover:-translate-y-px hover:bg-ink/90 sm:px-7"
-              >
-                View Projects
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <a
-                href="https://github.com/hemanthvnp"
-                target="_blank"
-                rel="noopener noreferrer"
-                id="cta-github"
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-ink/[0.12] bg-ink/[0.03] px-5 py-3 text-sm font-medium text-ink/70 transition-all hover:border-ink/20 hover:bg-ink/[0.06] hover:text-ink sm:px-7"
-              >
-                <Github className="h-4 w-4" />
-                GitHub
-              </a>
-            </div>
-          </motion.div>
-
-          {/* Right column: Benchmark terminal */}
-          <motion.div
-            initial={{ opacity: 0, x: 28 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.65, delay: 0.15 }}
-            className="relative hidden lg:block"
-          >
-            <BenchmarkWidget />
-            <div className="surface-dark absolute -bottom-3 -right-3 flex flex-col gap-2">
-              {[
-                { dot: "bg-cyan-400",    text: "298µs P50" },
-                { dot: "bg-orange-400",  text: "1.82ms P99" },
-                { dot: "bg-emerald-400", text: "50K+ req/s" },
-              ].map(({ dot, text }) => (
-                <div
-                  key={text}
-                  className="flex items-center gap-2 rounded-md border border-ink/[0.08] bg-paper px-3 py-1.5 font-mono text-xs text-ink/45"
-                >
-                  <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
-                  {text}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+      <section className="wrap pb-16 sm:pb-24">
+        <dl className="m-0 grid max-w-3xl grid-cols-1 gap-5 border-t border-ink/10 pt-6 sm:grid-cols-3 sm:gap-6">
+          {STATS.map((st, i) => <Stat key={st.label} index={i} {...st} />)}
+        </dl>
       </section>
 
-      {/* ════════════════════ 2. NUMBERS SECTION ════════════════════ */}
-      <section id="numbers" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-5xl">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            className="mb-10 text-center"
-          >
-            <p className="font-mono text-xs uppercase tracking-[0.35em] text-ink/35">by the numbers</p>
-            <p className="mt-1.5 font-mono text-[11px] text-ink/18">// because README stats weren't enough</p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
-            {numbers.map((n, i) => (
-              <motion.div
-                key={n.label}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-              >
-                <AnimatedStat value={n.value} suffix={n.suffix} label={n.label} delay={i * 0.05} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════ 3. FEATURED PROJECTS ════════════════════ */}
-      <section id="featured-projects" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-24">
-        <div className="mx-auto max-w-5xl">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="mb-12 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
-          >
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.35em] text-ink/35">featured work</p>
-              <h2 className="mt-3 text-3xl font-bold text-ink">Projects shaped around real constraints</h2>
-              <p className="mt-2 max-w-lg text-sm leading-relaxed text-ink/45">
-                Systems that had to be fast, algorithms that had to be correct, models that had to generalize.
-              </p>
+      <Block id="about" eyebrow="01 — About" title="The short version" note="Backend first.">
+        <p className="m-0 max-w-2xl text-xl leading-relaxed text-ink">
+          Backend engineer. I care about what happens when things go wrong: tenants that must stay isolated, gateways under overload, and LLM features that fail gracefully.
+        </p>
+        <p className="eyebrow mt-8">I work with</p>
+        <ul className="m-0 mt-3 list-none space-y-1 p-0 font-mono text-sm">
+          {STACK.map((line) => <li key={line}>{line}</li>)}
+        </ul>
+        <dl className="m-0 mt-8 grid gap-x-8 gap-y-5 border-t border-ink/10 pt-5 sm:grid-cols-2">
+          {BACKGROUND.map(([k, v]) => (
+            <div key={k}>
+              <dt className="eyebrow">{k}</dt>
+              <dd className="t-small m-0 mt-2">{[].concat(v).map((line) => <span key={line} className="block">{line}</span>)}</dd>
             </div>
-            <Link
-              to="/projects"
-              className="hidden items-center gap-1.5 font-mono text-xs text-ink/38 transition-colors hover:text-ink/70 sm:inline-flex"
-            >
-              view all <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </motion.div>
+          ))}
+        </dl>
+      </Block>
 
-          <div className="grid gap-5 lg:grid-cols-3">
-            {featuredProjects.map((p, i) => (
-              <motion.div
-                key={p.title}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className={`group relative overflow-hidden rounded-xl border bg-gradient-to-b p-6 transition-all hover:border-ink/18 hover:bg-ink/[0.03] ${p.border} ${p.gradient}`}
-              >
-                {/* Badge */}
-                <div className="mb-4 flex items-start justify-between">
-                  <span className={`rounded border px-2.5 py-1 font-mono text-xs ${p.badgeClass}`}>
-                    {p.badge}
-                  </span>
-                </div>
+      <Block id="experience" eyebrow="02 — Experience" title="Internship" note="Mar – Aug 2026">
+        <Rows items={EXPERIENCE} />
+      </Block>
 
-                {/* Title */}
-                <h3 className="text-xl font-bold text-ink">{p.title}</h3>
-                <p className="mt-0.5 text-xs text-ink/40">{p.subtitle}</p>
-
-                {/* Description */}
-                <p className="mt-3 text-sm leading-relaxed text-ink/48">{p.description}</p>
-
-                {/* Features */}
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {p.features.map((f) => (
-                    <span
-                      key={f}
-                      className="flex items-center gap-1.5 rounded border border-ink/[0.06] bg-ink/[0.02] px-2 py-0.5 font-mono text-[10px] text-ink/40"
-                    >
-                      <span className={`h-1 w-1 rounded-full ${p.dotColor}`} />
-                      {f}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Tech stack */}
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {p.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded border border-ink/[0.08] bg-ink/[0.02] px-2 py-0.5 font-mono text-xs text-ink/38"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Links */}
-                <div className="mt-5 flex items-center gap-3">
-                  <a
-                    href={p.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 font-mono text-xs text-ink/28 transition-colors hover:text-ink/60"
-                  >
-                    <Github className="h-3.5 w-3.5" />
-                    Source
-                  </a>
-                  {p.live && (
-                    <a
-                      href={p.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 rounded border border-ink/[0.08] bg-ink/[0.03] px-2.5 py-1 font-mono text-xs text-ink/40 transition-all hover:border-ink/15 hover:text-ink/65"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      Live Demo
-                    </a>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="mt-6 text-center sm:hidden">
-            <Link
-              to="/projects"
-              className="inline-flex items-center gap-2 rounded-lg bg-ink px-6 py-3 text-sm font-medium text-paper transition-transform hover:-translate-y-0.5"
-            >
-              All Projects <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════ 4. ABOUT ME ════════════════════ */}
-      <section id="about" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-24">
-        <div className="mx-auto max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-          >
-            <p className="font-mono text-xs uppercase tracking-[0.35em] text-ink/35">about me</p>
-            <h2 className="mt-3 text-3xl font-bold text-ink">Not "I love coding"</h2>
-            <p className="mt-1 font-mono text-[11px] text-ink/18">// every developer's portfolio says that. let's skip to the interesting part.</p>
-
-            <div className="mt-8 space-y-5">
-              <p className="text-[1.05rem] leading-relaxed text-ink/60">
-                I enjoy understanding how systems behave under scale and designing software
-                that remains reliable as complexity grows.
-              </p>
-              <p className="text-[0.95rem] leading-relaxed text-ink/45">
-                My current focus is <span className="text-ink/65">backend engineering</span>,{" "}
-                <span className="text-ink/65">distributed systems</span>,{" "}
-                <span className="text-ink/65">Linux</span>,{" "}
-                <span className="text-ink/65">cloud-native technologies</span>, and{" "}
-                <span className="text-ink/65">applied machine learning</span>.
-              </p>
-            </div>
-
-            {/* Philosophy quote */}
-            <div className="mt-8 rounded-xl border border-ink/[0.06] bg-ink/[0.02] px-6 py-5">
-              <p className="font-mono text-sm leading-relaxed text-ink/35">
-                <span className="text-cyan-400/50">"</span>
-                I'm a systems-oriented software engineer who builds scalable backend infrastructure
-                and production-grade applications.
-                <span className="text-cyan-400/50">"</span>
-              </p>
-            </div>
-
-            {/* Developer status — humor widget */}
-            <div className="surface-dark mt-6 overflow-hidden rounded-xl border border-ink/[0.06] bg-[#0a0a0a]">
-              <div className="flex items-center gap-2 border-b border-ink/[0.05] bg-[#111] px-4 py-2.5">
-                <Terminal className="h-3.5 w-3.5 text-ink/25" />
-                <span className="font-mono text-[11px] text-ink/25">hemanth.status</span>
-              </div>
-              <div className="px-4 py-3 font-mono text-[11px] leading-[1.9] text-ink/28">
-                <p><span className="text-cyan-400/50">const</span> <span className="text-ink/45">developer</span> = {'{'}</p>
-                <p className="pl-4"><span className="text-violet-400/50">fuel</span>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-orange-300/55">"☕".repeat(Infinity)</span>,</p>
-                <p className="pl-4"><span className="text-violet-400/50">sleep</span>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-orange-300/55">"Error: not found"</span>,</p>
-                <p className="pl-4"><span className="text-violet-400/50">debugStyle</span>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-orange-300/55">"console.log() until it works"</span>,</p>
-                <p className="pl-4"><span className="text-violet-400/50">tabs_vs_spaces</span>: <span className="text-orange-300/55">"spaces (I'm not a monster)"</span>,</p>
-                <p className="pl-4"><span className="text-violet-400/50">IDE</span>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="text-orange-300/55">"Neovim btw"</span>,</p>
-                <p>{'}'};</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ════════════════════ 5. TECH STACK ════════════════════ */}
-      <section id="tech-stack" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-24">
-        <div className="mx-auto max-w-5xl">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            className="mb-12"
-          >
-            <p className="font-mono text-xs uppercase tracking-[0.35em] text-ink/35">tech stack</p>
-            <h2 className="mt-3 text-3xl font-bold text-ink">A focused stack, used well</h2>
-            <p className="mt-2 max-w-lg text-sm leading-relaxed text-ink/45">
-              Chosen for building fast, reliable systems with clear interfaces and practical delivery.
-            </p>
-            <p className="mt-1 font-mono text-[11px] text-ink/18">// no, I don't add technologies just because they're trending on Hacker News</p>
-          </motion.div>
-
-          <div>
-            {techStack.map((group, i) => (
-              <motion.div
-                key={group.category}
-                initial={{ opacity: 0, x: -14 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-                className="flex flex-col gap-2.5 border-b border-ink/[0.05] py-4 last:border-0 sm:flex-row sm:items-center sm:gap-6"
-              >
-                <span className="w-36 shrink-0 font-mono text-xs uppercase tracking-[0.2em] text-ink/35">
-                  {group.category}
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {group.items.map((item) => (
-                    <span
-                      key={item}
-                      className={`cursor-default rounded border px-3 py-1 font-mono text-xs transition-all hover:scale-105 ${group.pills}`}
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════ 6. CURRENT FOCUS ════════════════════ */}
-      <section id="current-focus" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="grid h-10 w-10 place-items-center rounded-xl border border-cyan-400/20 bg-cyan-400/[0.06]">
-                <BookOpen className="h-5 w-5 text-cyan-300" />
-              </div>
-              <div>
-                <p className="font-mono text-xs uppercase tracking-[0.35em] text-ink/35">currently learning</p>
-              </div>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              {currentFocus.map((item, i) => (
-                <motion.div
-                  key={item}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06 }}
-                  className="flex items-center gap-3 rounded-xl border border-ink/[0.06] bg-ink/[0.02] px-5 py-4 transition-colors hover:border-ink/12 hover:bg-ink/[0.04]"
-                >
-                  <ChevronRight className="h-4 w-4 text-cyan-400/60" />
-                  <span className="text-sm text-ink/60">{item}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ════════════════════ 7. CAREER GOAL ════════════════════ */}
-      <section id="career-goal" className="border-t border-ink/[0.06] px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            className="rounded-2xl border border-emerald-400/15 bg-gradient-to-b from-emerald-400/[0.04] to-transparent px-8 py-10 text-center"
-          >
-            <div className="mx-auto mb-5 grid h-12 w-12 place-items-center rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.06]">
-              <Target className="h-6 w-6 text-emerald-300" />
-            </div>
-
-            <p className="font-mono text-xs uppercase tracking-[0.35em] text-ink/35">career goal</p>
-            <p className="mx-auto mt-4 max-w-lg text-[1.05rem] leading-relaxed text-ink/60">
-              Seeking <span className="text-ink/80 font-medium">Software Engineering</span>,{" "}
-              <span className="text-ink/80 font-medium">Backend Engineering</span>,{" "}
-              <span className="text-ink/80 font-medium">Systems Engineering</span>, and{" "}
-              <span className="text-ink/80 font-medium">Applied ML</span> internship opportunities.
-            </p>
-            <p className="mx-auto mt-2 font-mono text-[11px] text-ink/18">
-              // will debug production issues at 2 AM for experience. and pizza.
-            </p>
-
-            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 rounded-lg bg-ink px-7 py-3 text-sm font-semibold text-paper transition-all hover:-translate-y-px hover:bg-ink/90"
-              >
-                Get in Touch
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <a
-                href="/resume.pdf"
-                download="Hemanth_Vasudev_Resume.pdf"
-                className="inline-flex items-center gap-2 rounded-lg border border-ink/[0.12] bg-ink/[0.03] px-7 py-3 text-sm font-medium text-ink/70 transition-all hover:border-ink/20 hover:bg-ink/[0.06] hover:text-ink"
-              >
-                Download Resume
-              </a>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <Block id="projects" eyebrow="03 — Projects" title="Projects" note="Three systems built to survive failure.">
+        <Rows items={PROJECTS} />
+      </Block>
     </div>
   );
 }

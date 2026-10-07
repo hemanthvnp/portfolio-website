@@ -3,3 +3,6 @@
 
 /* JetBrains Mono — Engineering monospace for stats, code, labels */
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+/* Space Grotesk — display face for headlines, paired with Inter (body) and JetBrains Mono (labels/proof) */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&display=swap');
