@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Hemanth Vasudev</title>
-  <rect width="64" height="64" rx="14" fill="#F26A45"/>
-  <g fill="#0A0A0B">
+  <rect width="64" height="64" rx="14" fill="#0C0A09"/>
+  <g fill="#F26B43">
     <path d="M8 16h5v10h7V16h5v32h-5V31h-7v17H8z"/>
     <path d="M28 16h5.2l3.3 22.5L39.8 16H45l-6.2 32h-5.2z"/>
   </g>
-  <rect x="49" y="16" width="6" height="32" fill="#FFE9D6"/>
+  <rect x="49" y="16" width="6" height="32" fill="#F5F4F2"/>
 </svg>

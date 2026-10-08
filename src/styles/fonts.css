@@ -1,8 +1,62 @@
-/* Inter — Clean, modern sans-serif (Stripe/Linear/Vercel aesthetic) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+/* Fonts are self-hosted in public/fonts: no third-party request. Stacks are the --font-* tokens in theme.css;
+   this file and the OG image are the only places a family name is written.
 
-/* JetBrains Mono — Engineering monospace for stats, code, labels */
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+   Space Grotesk 700          display (preloaded in index.html: it sets the hero headline)
+   Inter (variable)           body, nav, buttons, labels
+   JetBrains Mono (variable)  proof numbers and readout panels
 
-/* Space Grotesk — display face for headlines, paired with Inter (body) and JetBrains Mono (labels/proof) */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&display=swap');
+   The latin files have no "→", so Inter and JetBrains Mono each carry a one-glyph file for it. */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-latin-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Metric-matched Arial Bold: holds the headline's line breaks until Space Grotesk lands.
+   Measured from the two font files (average advance and hhea metrics); re-measure if the display font changes. */
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  src: local('Arial Bold'), local('Arial-BoldMT'), local('Arial');
+  font-weight: 700;
+  size-adjust: 102.73%;
+  ascent-override: 95.78%;
+  descent-override: 28.42%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter-arrow.woff2') format('woff2');
+  unicode-range: U+2192;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-arrow.woff2') format('woff2');
+  unicode-range: U+2192;
+}

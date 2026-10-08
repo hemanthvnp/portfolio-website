@@ -1,51 +1,47 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ───────── Palette: single source of truth ─────────
-   Four colours per theme, stored as space-separated RGB channels so Tailwind
+   Four tokens per theme, stored as space-separated RGB channels so Tailwind
    opacity modifiers work (text-ink/70, border-ink/10).
 
    --bg       page
    --surface  raised panels (cards, readouts), one step off the page
    --c        ink: all text, borders and fills, at fixed opacities
-   --acc      the accent: CTA, section numbers, the "performs" word, healthy signals
-   --amb      amber: proof numbers only (the stats row)
-   --ok       green: success status only (the "200 OK" lines)
+   --acc      the accent: CTA, row numbers, the "performs" word, chevrons, pulse line, hover/focus/active state
 
    Ink opacity scale (the only ones to use):
      100  headings, names, key numbers
       80  body copy
-      70  secondary text, labels, icons   (min. for small text: 4.5:1)
+      70  secondary text, labels, icons, control outlines, scrollbar thumb   (min. for small text: 4.5:1)
       10  hairlines and borders
       03  quiet fills
-   Contrast: ink/70 is 6.5:1 (light) and 8.9:1 (dark). Re-measure acc and amb if you change them.
+   Contrast: ink/70 is 6.3:1 (light) and 8.9:1 (dark). acc on bg is 4.8:1 (light) and 6.5:1 (dark). Re-measure if you change them.
    Full notes: ../../design.md */
 :root {
   --bg: 251 246 236;      /* warm cream */
-  --surface: 253 251 246; /* lighter cream */
+  --surface: 255 253 248; /* warm off-white, no pure #fff */
   --c: 28 23 18;          /* warm near-black */
   --acc: 194 65 12;       /* orange-700 */
-  --amb: 180 83 9;        /* amber-700 */
-  --ok: 21 128 61;        /* green-700, success only */
+
+  /* The only easing curve in the project. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Type: the only font stacks in the project. In @theme so Tailwind's own font-sans / font-mono
+   resolve to them and font-display exists as a utility. Faces are declared in fonts.css. */
+@theme {
+  --font-display: 'Space Grotesk', 'Space Grotesk Fallback', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  /* One line-height for running text at any size (.t-body, .t-small, leading-body). */
+  --leading-body: 1.6;
 }
 
 .dark {
-  --bg: 10 10 11;         /* near-black, no pure #000 */
-  --surface: 20 20 22;
-  --c: 244 244 245;       /* zinc-100, softer than pure white */
+  --bg: 12 10 9;          /* warm near-black, no pure #000 */
+  --surface: 22 20 18;
+  --c: 245 244 242;       /* warm off-white, softer than pure white */
   --acc: 242 107 67;      /* orange, matches the design */
-  --amb: 240 176 64;      /* amber */
-  --ok: 74 222 128;       /* green-400, success only */
-}
-
-/* Always-dark widgets (e.g. the 404 terminal) keep the dark palette in either theme. */
-.surface-dark {
-  --bg: 10 10 11;
-  --surface: 20 20 22;
-  --c: 244 244 245;
-  --acc: 242 107 67;
-  --amb: 240 176 64;
-  --ok: 74 222 128;
-  color-scheme: dark;
 }
 
 @theme inline {
@@ -53,17 +49,13 @@
   --color-paper: rgb(var(--bg));
   --color-surface: rgb(var(--surface));
   --color-acc: rgb(var(--acc));
-  --color-amb: rgb(var(--amb));
-  --color-ok: rgb(var(--ok));
+  /* Tailwind's transition-* utilities use the project curve too. */
+  --default-transition-timing-function: var(--ease-out);
 }
 
 @layer base {
   * {
     border-color: rgb(var(--c) / 0.1);
-  }
-
-  html {
-    font-size: 16px;
   }
 
   body {

@@ -1,10 +1,14 @@
-
 # Portfolio Website
 
 My personal portfolio website built with React, Vite, and Tailwind CSS.
 
 ## Running the code
 
-Run `npm i` to install the dependencies.
+The project uses [pnpm](https://pnpm.io).
 
-Run `npm run dev` to start the development server.
+- `pnpm install` installs the dependencies.
+- `pnpm dev` starts the development server.
+- `pnpm build` writes the production build to `dist/`.
+- `pnpm preview` serves that build locally.
+
+Deployed on Vercel; `vercel.json` holds the SPA rewrite and the response headers.

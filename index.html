@@ -3,46 +3,68 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hemanth Vasudev | Backend Engineer</title>
-    <meta name="description" content="Backend intern at EWhizard. Cut a stack from 9 to 5 containers, built a gateway at 28.5K req/s, shipped a 150-test multi-tenant platform." />
+    <title>Hemanth Vasudev | Software Engineer</title>
+    <meta name="description" content="Software engineer. Built a C++ gateway at 28.5K req/s, shipped a 150-test multi-tenant platform, and cut a production stack from 9 to 5 containers." />
     <meta name="theme-color" content="#fbf6ec" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0c0a09" media="(prefers-color-scheme: dark)" />
     <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://hemanthvnp-portfolio.vercel.app/" />
 
     <!-- Open Graph / Twitter -->
-    <meta property="og:title" content="Hemanth Vasudev | Backend Engineer" />
-    <meta property="og:description" content="Backend intern at EWhizard. Cut a stack from 9 to 5 containers, built a gateway at 28.5K req/s, shipped a 150-test multi-tenant platform." />
+    <meta property="og:title" content="Hemanth Vasudev | Software Engineer" />
+    <meta property="og:description" content="Software engineer. Built a C++ gateway at 28.5K req/s, shipped a 150-test multi-tenant platform, and cut a production stack from 9 to 5 containers." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og-image.svg" />
+    <meta property="og:url" content="https://hemanthvnp-portfolio.vercel.app/" />
+    <meta property="og:image" content="https://hemanthvnp-portfolio.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Hemanth Vasudev N P, Software Engineer. I engineer software that performs when it matters." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Hemanth Vasudev | Backend Engineer" />
-    <meta name="twitter:description" content="Backend intern at EWhizard. Cut a stack from 9 to 5 containers, built a gateway at 28.5K req/s, shipped a 150-test multi-tenant platform." />
-    <meta name="twitter:image" content="/og-image.svg" />
+    <meta name="twitter:title" content="Hemanth Vasudev | Software Engineer" />
+    <meta name="twitter:description" content="Software engineer. Built a C++ gateway at 28.5K req/s, shipped a 150-test multi-tenant platform, and cut a production stack from 9 to 5 containers." />
+    <meta name="twitter:image" content="https://hemanthvnp-portfolio.vercel.app/og-image.png" />
 
-    <!-- Performance / Fonts / Manifest -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Only the display face is preloaded: it sets the hero headline. -->
+    <link rel="preload" href="/fonts/space-grotesk-latin-700.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Icons / Manifest -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="msapplication-TileColor" content="#0f172a" />
+    <meta name="msapplication-TileColor" content="#0c0a09" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Hemanth Vasudev N P",
+        "jobTitle": "Software Engineer",
+        "url": "https://hemanthvnp-portfolio.vercel.app/",
+        "email": "mailto:hemanth.vasudev.official@gmail.com",
+        "alumniOf": { "@type": "CollegeOrUniversity", "name": "PSG College of Technology" },
+        "sameAs": ["https://github.com/hemanthvnp", "https://www.linkedin.com/in/hemanthvnp/"]
+      }
+    </script>
+
+    <!-- Sets the theme class before paint to avoid a flash of the wrong theme. -->
+    <script src="/theme-init.js"></script>
   </head>
 
   <body>
-    <!-- Set the theme class before paint to avoid a flash of the wrong theme. -->
-    <script>
-      (function () {
-        try {
-          var t = localStorage.getItem("theme");
-          var isLight = t ? t === "light" : window.matchMedia("(prefers-color-scheme: light)").matches;
-          document.documentElement.classList.toggle("dark", !isLight);
-          document.documentElement.classList.toggle("light", isLight);
-          document.documentElement.style.colorScheme = isLight ? "light" : "dark";
-        } catch (e) {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-    </script>
     <div id="root"></div>
+    <!-- Without JavaScript the app cannot render; this keeps the essentials readable. -->
+    <noscript>
+      <div class="wrap section">
+        <h1 class="t-display">Hemanth Vasudev N P, Software Engineer</h1>
+        <p class="t-body">I engineer software that performs when it matters. This site needs JavaScript to show the full page.</p>
+        <p class="t-body">
+          <a class="link-arrow" href="/resume.pdf">Resume</a> ·
+          <a class="link-arrow" href="https://github.com/hemanthvnp">GitHub</a> ·
+          <a class="link-arrow" href="https://www.linkedin.com/in/hemanthvnp/">LinkedIn</a> ·
+          <a class="link-arrow" href="mailto:hemanth.vasudev.official@gmail.com">hemanth.vasudev.official@gmail.com</a>
+        </p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -1,6 +1,5 @@
 import { ThemeProvider } from "next-themes";
-import { RouterProvider } from "react-router";
-import { router } from "./routes.jsx";
+import { Router } from "./routes.jsx";
 
 export default function App() {
   return (
@@ -10,7 +9,7 @@ export default function App() {
       enableSystem
       disableTransitionOnChange
     >
-      <RouterProvider router={router} />
+      <Router />
     </ThemeProvider>
   );
 }
