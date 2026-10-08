@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "motion/react";
 
-// One shared scroll reveal so every page animates the same way:
+// The one scroll reveal on the site, used by the stats row only (see design.md, Motion):
 // fade up 12px, 0.5s ease-out, once, optional stagger via `delay`.
 export function Reveal({ children, delay = 0, as = "div", className }) {
   const reduce = useReducedMotion();

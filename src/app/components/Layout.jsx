@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
-import { Outlet, Link } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { Outlet, Link, useLocation } from "react-router";
+import { useReducedMotion } from "motion/react";
+import "lenis/dist/lenis.css";
 import { ThemeToggle } from "./ThemeToggle.jsx";
 
 const social = [
@@ -7,20 +9,23 @@ const social = [
   ["LinkedIn", "https://www.linkedin.com/in/hemanthvnp/"],
 ];
 
-// [href, label, wide, section ids that mark it active]. `wide` links only show from sm up.
+// [href, label, wide, section ids that mark it active]. `wide` links only show from sm up:
+// on a phone the bar keeps the three in-page jumps, and the resume stays one tap away in the hero.
 const links = [
-  ["#about", "about", true, ["about"]],
-  ["#experience", "work", true, ["experience", "projects"]],
-  ["/resume.pdf", "resume"],
+  ["#about", "about", false, ["about"]],
+  ["#experience", "work", false, ["experience", "projects"]],
+  ["/resume.pdf", "resume", true],
   ["#contact", "contact", false, ["contact"]],
 ];
 
 const SECTION_IDS = ["about", "experience", "projects", "contact"];
 
-// Tracks which section sits across the middle of the viewport.
-function useActiveSection() {
+// Tracks which section sits across the middle of the viewport. Re-observes on every route change:
+// the layout stays mounted, so the home sections only exist after arriving from another page.
+function useActiveSection(pathname) {
   const [active, setActive] = useState(null);
   useEffect(() => {
+    setActive(null);
     const els = SECTION_IDS.map((id) => document.getElementById(id)).filter(Boolean);
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
@@ -31,57 +36,83 @@ function useActiveSection() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [pathname]);
   return active;
 }
 
+// Inertia scrolling for wheel and #anchor jumps. Touch stays native; off for reduced motion.
+// Returns a ref to the Lenis instance (null until it loads, and under reduced motion).
+function useSmoothScroll() {
+  const reduce = useReducedMotion();
+  const ref = useRef(null);
+  useEffect(() => {
+    if (reduce) return;
+    // Loaded after first paint: the page does not need it to render.
+    let cancelled = false;
+    import("lenis").then(({ default: Lenis }) => {
+      if (!cancelled) ref.current = new Lenis({ autoRaf: true, anchors: true, lerp: 0.1 });
+    });
+    return () => { cancelled = true; ref.current?.destroy(); ref.current = null; };
+  }, [reduce]);
+  return ref;
+}
+
 export function Layout() {
-  const active = useActiveSection();
+  const lenis = useSmoothScroll();
+  // The wordmark links to "/", which changes nothing when already there: scroll back to the top as well.
+  const toTop = () => (lenis.current ? lenis.current.scrollTo(0) : window.scrollTo({ top: 0 }));
+  const { pathname } = useLocation();
+  const active = useActiveSection(pathname);
+  const home = pathname === "/";
   return (
     <div className="min-h-screen bg-paper text-ink">
-      <header className="fixed left-0 right-0 top-0 z-50 border-b border-ink/10 bg-paper/90 backdrop-blur-xl">
-        <nav aria-label="Primary" className="wrap flex items-center justify-between gap-4 py-3">
-          <Link to="/" aria-label="Hemanth Vasudev, home" className="tap inline-flex items-center font-mono text-base font-bold">
-            HV<span aria-hidden="true" className="cursor ml-1 inline-block h-[1.1em] w-[0.55em] bg-acc" />
+      <a href="#main" className="skip-link btn btn-primary" onClick={() => document.getElementById("main")?.focus()}>Skip to content</a>
+      {/* A compact bar floating over the page, as wide as its links. The header itself lets clicks through. */}
+      <header className="pointer-events-none fixed inset-x-0 top-3 z-50 px-3">
+        <nav aria-label="Primary" className="pointer-events-auto mx-auto flex w-fit items-center gap-4 rounded-lg border border-ink/10 bg-paper/90 py-1.5 pl-4 pr-1.5 backdrop-blur-xl sm:gap-6">
+          <Link to="/" onClick={toTop} aria-label="HV, Hemanth Vasudev, home" className="tap font-display text-base font-bold tracking-tight">
+            HV
           </Link>
-          <div className="flex items-center gap-4 sm:gap-6">
-            {links.map(([href, label, wide, ids]) => {
-              const on = ids?.includes(active);
-              return (
-                <a
-                  key={href}
-                  href={href}
-                  aria-current={on ? "location" : undefined}
-                  className={`tap text-sm hover:text-ink ${on ? "text-ink underline decoration-acc decoration-2 underline-offset-8" : "text-ink/70"} ${wide ? "hidden sm:inline" : ""}`}
-                  {...(href.endsWith(".pdf") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                >
-                  {label}
-                </a>
-              );
-            })}
-            <ThemeToggle />
-          </div>
+          {links.map(([href, label, wide, ids]) => {
+            const on = ids?.includes(active);
+            // About and work only exist on the home page; from anywhere else, route there first.
+            const away = !home && href.startsWith("#") && href !== "#contact";
+            const Tag = away ? Link : "a";
+            return (
+              <Tag
+                key={href}
+                {...(away ? { to: `/${href}` } : { href })}
+                aria-current={on ? "location" : undefined}
+                className={`tap whitespace-nowrap text-sm font-medium hover:text-ink ${on ? "text-ink underline decoration-acc decoration-2 underline-offset-8" : "text-ink/70"} ${wide ? "hidden sm:inline" : ""}`}
+                {...(href.endsWith(".pdf") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                {label}
+              </Tag>
+            );
+          })}
+          <ThemeToggle />
         </nav>
       </header>
 
-      <main className="pt-[4.5rem] sm:pt-20">
+      <main id="main" tabIndex={-1} className="pt-[4.5rem] outline-none sm:pt-20">
         <Outlet />
       </main>
 
       <footer id="contact" className="section">
         <div className="wrap">
-          <p className="eyebrow !text-acc">04 — Contact</p>
-          <h2 className="font-display mt-4 max-w-2xl text-[clamp(2rem,5vw,3.25rem)] font-bold leading-[1.1] tracking-[-0.03em]">
-            Have a problem worth solving?
+          <h2 className="t-display max-w-2xl">
+            Building something that has to stay up?
           </h2>
-          <p className="t-body mt-6 break-all sm:break-normal">
-            <a href="mailto:hemanth.vasudev.official@gmail.com" className="link-arrow !text-ink">hemanth.vasudev.official@gmail.com</a>
+          {/* 14px on phones so the address stays on one line down to 320px. */}
+          <p className="m-0 mt-6 text-sm sm:text-xl">
+            <a href="mailto:hemanth.vasudev.official@gmail.com" className="link-arrow tap inline-block whitespace-nowrap text-ink">hemanth.vasudev.official@gmail.com</a>
           </p>
-          <nav aria-label="Elsewhere" className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm font-semibold">
+          <nav aria-label="Elsewhere" className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium">
             {social.map(([label, href]) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="tap hover:text-acc">{label}</a>
             ))}
           </nav>
+          <p className="t-small m-0 mt-16 border-t border-ink/10 pt-6">© 2026 Hemanth Vasudev N P</p>
         </div>
       </footer>
     </div>
