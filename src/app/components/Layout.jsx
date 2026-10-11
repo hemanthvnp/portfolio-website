@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation } from "react-router";
 import { useReducedMotion } from "motion/react";
 import "lenis/dist/lenis.css";
 import { ThemeToggle } from "./ThemeToggle.jsx";
+import { Logo } from "./Logo.jsx";
 
 const social = [
   ["GitHub", "https://github.com/hemanthvnp"],
@@ -59,7 +60,7 @@ function useSmoothScroll() {
 
 export function Layout() {
   const lenis = useSmoothScroll();
-  // The wordmark links to "/", which changes nothing when already there: scroll back to the top as well.
+  // The logo links to "/", which changes nothing when already there: scroll back to the top as well.
   const toTop = () => (lenis.current ? lenis.current.scrollTo(0) : window.scrollTo({ top: 0 }));
   const { pathname } = useLocation();
   const active = useActiveSection(pathname);
@@ -70,8 +71,8 @@ export function Layout() {
       {/* A compact bar floating over the page, as wide as its links. The header itself lets clicks through. */}
       <header className="pointer-events-none fixed inset-x-0 top-3 z-50 px-3">
         <nav aria-label="Primary" className="pointer-events-auto mx-auto flex w-fit items-center gap-4 rounded-lg border border-ink/10 bg-paper/90 py-1.5 pl-4 pr-1.5 backdrop-blur-xl sm:gap-6">
-          <Link to="/" onClick={toTop} aria-label="HV, Hemanth Vasudev, home" className="tap font-display text-base font-bold tracking-tight">
-            HV
+          <Link to="/" onClick={toTop} aria-label="HV, Hemanth Vasudev, home" className="tap block">
+            <Logo className="block h-8 w-auto" />
           </Link>
           {links.map(([href, label, wide, ids]) => {
             const on = ids?.includes(active);

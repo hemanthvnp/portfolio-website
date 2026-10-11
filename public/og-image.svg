@@ -1,7 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
   <rect width="1200" height="630" fill="#0c0a09"/>
-  <text x="80" y="110" fill="#f5f4f2" font-family="Inter, sans-serif" font-size="26" font-weight="600" letter-spacing="0.65">Hemanth Vasudev N P</text>
-  <text x="80" y="150" fill="#f5f4f2" fill-opacity="0.7" font-family="Inter, sans-serif" font-size="24">Software Engineer</text>
+  <svg x="80" y="62" width="54.4" height="64" viewBox="16 10 68 80">
+    <path d="M22 16h7v68h-7zM71 16h7v68h-7z" fill="#f5f4f2"/>
+    <path d="M31 53.25 L36.99 53.25 L50 79.27 L63.01 53.25 L69 53.25 L69 46.75 L58.99 46.75 L50 64.73 L41.01 46.75 L31 46.75Z" fill="#f26b43"/>
+  </svg>
+  <text x="158" y="94" fill="#f5f4f2" font-family="Inter, sans-serif" font-size="26" font-weight="600" letter-spacing="0.65">Hemanth Vasudev N P</text>
+  <text x="158" y="128" fill="#f5f4f2" fill-opacity="0.7" font-family="Inter, sans-serif" font-size="24">Software Engineer</text>
   <text x="80" y="290" fill="#f5f4f2" font-family="Space Grotesk, Inter, sans-serif" font-size="84" font-weight="700" letter-spacing="-3">I engineer software that</text>
   <text x="80" y="385" font-family="Space Grotesk, Inter, sans-serif" font-size="84" font-weight="700" letter-spacing="-3"><tspan fill="#f26b43">performs</tspan><tspan fill="#f5f4f2"> when it matters.</tspan></text>
   <path d="M80 440 H520" stroke="#f26b43" stroke-width="3"/>
