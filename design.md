@@ -61,7 +61,7 @@ The latin files have no `→`, which the readouts use, so Inter and JetBrains
 Mono each carry a one-glyph file for it. Before using any other symbol, check
 it is in the files.
 
-- Display: Space Grotesk 700 (`.t-hero`, `.t-display`, `.t-h2`, `.t-row`), and the nav wordmark.
+- Display: Space Grotesk 700 (`.t-hero`, `.t-display`, `.t-h2`, `.t-row`).
   Display sizes are fluid `clamp()` values; everything else sits on 12 / 14 / 16 / 20.
   Two exceptions: buttons are 15, and proof numbers are 30 (48 from `sm`).
   Sizes are in `rem` and the root is left at the reader's own setting.
@@ -136,7 +136,16 @@ No ambient loops, no parallax, no other scrub, no magnetic effects.
 
 ## Rules
 - No new colours. Add a token here first. The favicon, OG image and `theme-color` use the same hex values.
-  The favicon is a dark tile with accent letters so it holds up on light and dark browser chrome.
+  The favicon is a dark tile with the accent mark so it holds up on light and dark browser chrome.
+- Logo: an H whose crossbar dips into a V (`Logo.jsx`). Stems are ink, the crossbar is accent, both from the
+  tokens, so it follows the theme. It is the one resting use of accent besides the pulse line, because it is the
+  same idea as the pulse line. Never fill a background with accent, never put it on the stems (the favicon tile
+  is the exception: dark tile, all-accent mark, so it holds on light and dark browser chrome).
+  Two cuts: `gap` (bar floats 2 units clear of the stems) from 48px up; `heavy` (10-unit stems and bar) below
+  48px, always under 24px. The nav uses `heavy` at 32px. Clear space is half the mark's width; minimums are
+  24px for the mark alone and 16px for the favicon tile.
+  `favicon.svg`, `apple-touch-icon.png` (full-bleed, iOS rounds it), `icon-192/512.png` (rounded, transparent
+  corners) and the OG image's lockup all use it; re-render the PNGs when the mark changes.
   `theme-color` follows the theme toggle, not just the OS setting.
   The OG image sets type as the hero does: Inter for the name, role and thesis, Space Grotesk for the claim.
   `og-image.png` is a 1200x630 render of `og-image.svg` with the files in `public/fonts`; re-render it when the SVG changes.
