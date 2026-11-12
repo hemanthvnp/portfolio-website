@@ -7,9 +7,9 @@ import { Reveal } from "./Reveal";
 // Every stat counts when scrolled into view: `from` -> `to`, wrapped in prefix/suffix.
 // `from` has as many digits as `to`, so the number keeps its width and the unit does not slide while it counts.
 const STATS = [
-  { from: 10, to: 28.5, decimals: 1, suffix: "K", unit: "req/s", label: "sustained throughput, zero failures", project: "Throttlr · C++" },
-  { prefix: "<", from: 9, to: 5, unit: "ms", label: "repeat search, down from ~2 s", project: "CineScope · Python" },
-  { from: 100, to: 150, label: "passing tests", project: "ArthaDhruva · Java" },
+  { from: 10, to: 21, suffix: "K+", unit: "req/s", label: "at 400 connections, P99 under 40 ms", project: "Throttlr · C++" },
+  { from: 10, to: 40, suffix: "%", label: "lower categorization latency, 152 to 92 ms", project: "EWhizard · Python" },
+  { from: 100, to: 385, label: "passing tests", project: "ArthaDhruva · Java" },
 ];
 
 function Stat({ prefix = "", from = 0, to, decimals = 0, suffix = "", unit, label, project, index = 0 }) {
@@ -139,13 +139,13 @@ const EXPERIENCE = [
     title: "EWhizard",
     constraint: "Backend Engineering Intern · Mar – Aug 2026",
     bullets: [
-      <>Found and fixed a <b>cross-user data-isolation vulnerability</b> in an LLM-generated SQL pipeline across 2 production endpoints.</>,
-      <>Cut the deployed stack from <b>9 to 5 containers</b> by merging 4 parsing services into one worker, halving image size ({"21.8 → 11.8 GB"}) and clean build time ({"20 → 10 min"}).</>,
-      <>Built an MCP server with <b>6 tools</b> for Figma-to-code conversion.</>,
+      <>Patched a <b>cross-user data leak</b> in LLM-generated SQL on PostgreSQL by forcing every query through a per-user filter, so users of 2 FastAPI endpoints only ever see their own rows.</>,
+      <>Cut categorization API latency <b>40%</b> ({"152 → 92 ms"}) by profiling a 3-stage ML pipeline served by FastAPI and removing a separate process spawn that ran on every prediction.</>,
+      <>Developed a Node.js <b>MCP server</b> that lets AI coding agents turn Figma designs into React and CSS, handling a 500-layer screen in <b>12 ms</b> and a 12,000-layer page in <b>104 ms</b>.</>,
     ],
-    summary: "9 → 5 containers",
-    run: [["containers", "9 → 5"], ["image size", "21.8 → 11.8 GB"], ["clean build", "20 → 10 min"], ["endpoints secured", "2"], ["MCP tools", "6"]],
-    tech: "Python · APScheduler · LLM pipelines",
+    summary: "40% faster · 2 endpoints secured",
+    run: [["latency", "152 → 92 ms"], ["500-layer screen", "12 ms"], ["12,000-layer page", "104 ms"], ["endpoints secured", "2"]],
+    tech: "Python · FastAPI · PostgreSQL · Node.js",
     live: "https://proleap.ewhizard.tech/",
   },
 ];
@@ -153,34 +153,34 @@ const EXPERIENCE = [
 const PROJECTS = [
   {
     title: "ArthaDhruva",
-    constraint: "Prevents tenant leaks",
-    text: "Multi-tenant credit risk platform for mortgage lenders. Scores loan default risk with ML models and projects portfolio losses, with tenants isolated by Row Level Security (RLS).",
-    hard: "Making parallel Monte Carlo runs reproducible on any thread count, by seeding each scenario independently.",
-    // No readout: it would only repeat the summary. Add `run` back when there is a measured figure the summary lacks.
-    summary: "150 tests · RLS isolation",
-    tech: "Spring Boot · React.js · PostgreSQL · Neo4j · ONNX Runtime · Docker · GitHub Actions",
+    constraint: "Survives a replica crash, isolates every tenant",
+    text: "Multi-tenant mortgage risk platform in Spring Boot. Scores loans for default via ONNX at P95 under 50 ms. Tenants are isolated with PostgreSQL RLS. 385 tests.",
+    hard: "Keeping long runs correct when a replica dies. A stale worker can't overwrite a newer attempt. CI kills a replica mid-run, and a second attempt finishes from checkpoints.",
+    summary: "P95 < 50 ms · 385 tests · RLS",
+    run: [["score latency", "P95 < 50 ms"], ["tests", "385"], ["regime paths", "2^T in O(T)"]],
+    tech: "Spring Boot · PostgreSQL · ONNX Runtime · Java · Docker · GitHub Actions",
     github: "https://github.com/hemanthvnp/ArthaDhruva",
     live: "https://arthadhruva.azurewebsites.net/",
   },
   {
     title: "Throttlr",
     constraint: "Survives overload and server failure",
-    text: "API gateway with TLS, JWT, rate limiting and automatic failover.",
-    hard: "Reloading rate limits and routing rules live, with no cold start or dropped connections.",
-    summary: "28.5K req/s · P99 2.82 ms",
-    run: [["throughput", "28,548 req/s"], ["p99", "2.82 ms"], ["failures", "0 / 857K"]],
-    tech: "C++ · TLS · JWT · Redis · Docker · GitHub Actions",
+    text: "C++20 API gateway with TLS, JWT, rate limiting and circuit-breaker failover. With a backend killed, 60 of 60 GETs succeed and POSTs run at most once.",
+    hard: "Reloading config while requests are in flight. An atomic swap means no request sees a half-updated config. 11 reloads under load, zero failures.",
+    summary: "21K+ req/s · P99 < 40 ms",
+    run: [["throughput", "21K+ req/s"], ["connections", "400"], ["p99", "< 40 ms"], ["failover GETs", "60 / 60"]],
+    tech: "C++20 · epoll · TLS · JWT · Docker · GitHub Actions",
     github: "https://github.com/hemanthvnp/Throttlr",
     live: "https://throttlr-gateway.onrender.com/",
   },
   {
     title: "CineScope",
     constraint: "Survives LLM outages",
-    text: "LLM-powered movie search that plans parallel TMDB and ML calls across 5 microservices.",
-    hard: "Staying fast and available when the LLM fails: circuit breakers, two-tier caching and fallbacks.",
-    summary: "~2 s → <5 ms repeats",
-    run: [["repeat search", "~2 s → <5 ms"], ["tests", "83 gate every release"]],
-    tech: "FastAPI · Express.js · React.js · MongoDB · Docker · GitHub Actions",
+    text: "Conversational movie search on 4 Dockerized microservices. Intent classification and TMDB prefetch run in parallel, and results stream over SSE. A rule-based fallback answers when the LLM is down.",
+    hard: "Never losing a rating. A burst costs one rebuild, and an event is acked only after that rebuild succeeds.",
+    summary: "4 services · LLM-outage fallback",
+    run: [["microservices", "4"], ["retraining", "Redis Streams, at-least-once"]],
+    tech: "FastAPI · Express.js · React.js · MongoDB · Redis · Docker · GitHub Actions",
     github: "https://github.com/hemanthvnp/CineScope",
     live: "https://cinescope-frontend-2i07.onrender.com/",
   },
@@ -312,10 +312,10 @@ function Block({ id, title, pad = "", children }) {
 
 // One line per layer, no labels, so it reads as a stack rather than an inventory. Only tools a project on this page uses.
 const STACK = [
-  "Python · Java · C++",
-  "FastAPI · Express.js · React.js · Spring Boot",
-  "PostgreSQL · MongoDB · Redis · Neo4j",
-  "Docker · GitHub Actions · Azure",
+  "Python · C++ · Java · JavaScript · SQL",
+  "FastAPI · Flask · Node.js · Express.js · React.js · Spring Boot",
+  "PostgreSQL · MySQL · MongoDB · Redis · Neo4j",
+  "Linux · Docker · GitHub Actions · Git",
 ];
 
 const BACKGROUND = [
